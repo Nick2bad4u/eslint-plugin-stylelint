@@ -45,7 +45,14 @@ export const extractPresetsMatrixSection = (markdown) => {
     return markdown.slice(startOffset, endOffset);
 };
 
-const preferredRuleOrder = ["stylelint", "prefer-stylelint-define-config"];
+const preferredRuleOrder = [
+    "stylelint",
+    "prefer-stylelint-define-config",
+    "prefer-stylelint-report-descriptionless-disables",
+    "prefer-stylelint-report-invalid-scope-disables",
+    "prefer-stylelint-report-needless-disables",
+    "prefer-stylelint-report-unscoped-disables",
+];
 const rules = Object.entries(builtPlugin.rules).toSorted(([left], [right]) => {
     const leftIndex = preferredRuleOrder.indexOf(left);
     const rightIndex = preferredRuleOrder.indexOf(right);

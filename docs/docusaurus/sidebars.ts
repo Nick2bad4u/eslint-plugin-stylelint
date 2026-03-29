@@ -12,6 +12,32 @@ const sidebars: SidebarsConfig = {
             label: "Getting Started",
             type: "doc",
         },
+        {
+            items: [
+                {
+                    id: "stylelint-bridge",
+                    label: "Stylelint bridge",
+                    type: "doc",
+                },
+                {
+                    id: "config-authoring",
+                    label: "Config authoring",
+                    type: "doc",
+                },
+                {
+                    id: "benchmarks",
+                    label: "Benchmarks",
+                    type: "doc",
+                },
+                {
+                    id: "faq",
+                    label: "FAQ",
+                    type: "doc",
+                },
+            ],
+            label: "Guides",
+            type: "category",
+        },
     ],
 };
 

@@ -1,0 +1,20 @@
+.features {
+    padding: 2rem 0 4rem;
+}
+
+.grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(
+        auto-fit,
+        [feature-column-start] minmax(16rem, 1fr) [feature-column-end]
+    );
+}
+
+.card {
+    padding: 1rem 1.25rem;
+}
+
+.link {
+    font-weight: 700;
+}

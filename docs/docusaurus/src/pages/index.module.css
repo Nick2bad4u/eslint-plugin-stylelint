@@ -1,14 +1,38 @@
 .hero {
-    padding: 6rem 0;
+    padding: 5rem 0 3rem;
+    background: linear-gradient(135deg, #172554 0%, #1d4ed8 55%, #22d3ee 100%);
+    color: #ffffff;
+}
+
+.heroContent {
+    max-inline-size: 46rem;
 }
 
 .tagline {
     font-size: 1.125rem;
-    max-inline-size: 42rem;
+    max-inline-size: 40rem;
 }
 
-.actions {
+.statsRow {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     margin-block-start: 1.5rem;
+}
+
+.statGrid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(
+        auto-fit,
+        [card-column-start] minmax(14rem, 1fr) [card-column-end]
+    );
+    margin-block-start: 2rem;
+}
+
+.statCard {
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    backdrop-filter: blur(8px);
+    background: rgb(255 255 255 / 0.12);
 }

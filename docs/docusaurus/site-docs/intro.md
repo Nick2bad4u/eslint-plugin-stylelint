@@ -11,8 +11,27 @@ It currently focuses on two workflows:
 
 - run Stylelint through ESLint for CSS files
 - standardize `defineConfig()` usage in Stylelint config files
+- enforce config hygiene for Stylelint disable-comment reporting
 
 ## Start here
 
-- Open the Rules section in the navbar for rule reference pages.
-- Open Getting Started in this docs section for the fastest setup path.
+- Read [Getting Started](./getting-started.md) for the quickest setup path.
+- Read [Stylelint bridge](./stylelint-bridge.md) to understand how the runtime integration works.
+- Read [Config authoring](./config-authoring.md) if your team wants stricter Stylelint config hygiene.
+
+## Why this plugin exists
+
+Projects that already use ESLint as the single editor and CI lint entrypoint often still keep stylesheet linting in a separate Stylelint command.
+
+This plugin reduces that split by exposing Stylelint diagnostics through ESLint while still letting Stylelint remain the source of truth for stylesheet rules.
+
+## Current rule families
+
+- **Bridge rule** — `stylelint`
+- **Config authoring rules** — `prefer-stylelint-define-config`, `prefer-stylelint-report-descriptionless-disables`, `prefer-stylelint-report-invalid-scope-disables`, `prefer-stylelint-report-needless-disables`, `prefer-stylelint-report-unscoped-disables`
+
+## Recommended adoption order
+
+1. Start with `stylelint2.configs.stylesheets` if you only want the bridge.
+2. Move to `stylelint2.configs.recommended` when you also want config hygiene.
+3. Tune Stylelint itself before adding more plugin-side config rules.

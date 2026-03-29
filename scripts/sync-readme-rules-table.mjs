@@ -146,7 +146,14 @@ const toRuleTableRow = ([ruleName, ruleModule]) => {
  * >} rules
  */
 export const generateReadmeRulesSectionFromRules = (rules) => {
-    const preferredRuleOrder = ["stylelint", "prefer-stylelint-define-config"];
+    const preferredRuleOrder = [
+        "stylelint",
+        "prefer-stylelint-define-config",
+        "prefer-stylelint-report-descriptionless-disables",
+        "prefer-stylelint-report-invalid-scope-disables",
+        "prefer-stylelint-report-needless-disables",
+        "prefer-stylelint-report-unscoped-disables",
+    ];
     const ruleEntries = Object.entries(rules).toSorted(([left], [right]) => {
         const leftIndex = preferredRuleOrder.indexOf(left);
         const rightIndex = preferredRuleOrder.indexOf(right);

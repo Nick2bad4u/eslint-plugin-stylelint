@@ -32,7 +32,7 @@ export default [
 | -------------------------------- | ------------------------------------------------------------------ |
 | `stylelint2.configs.recommended` | Enable stylesheet linting plus Stylelint config authoring guidance |
 | `stylelint2.configs.stylesheets` | Enable only the Stylelint bridge rule for CSS files                |
-| `stylelint2.configs.configs`     | Enable only the Stylelint config authoring rule                    |
+| `stylelint2.configs.configs`     | Enable only the Stylelint config authoring rules                   |
 | `stylelint2.configs.all`         | Currently the same as `recommended`                                |
 
 ## Configuration examples
@@ -67,6 +67,14 @@ export default [
 ];
 ```
 
+That preset currently enables:
+
+- `stylelint-2/prefer-stylelint-define-config`
+- `stylelint-2/prefer-stylelint-report-descriptionless-disables`
+- `stylelint-2/prefer-stylelint-report-invalid-scope-disables`
+- `stylelint-2/prefer-stylelint-report-needless-disables`
+- `stylelint-2/prefer-stylelint-report-unscoped-disables`
+
 ### Passing Stylelint options
 
 ```ts
@@ -99,10 +107,14 @@ export default [
   - `🛠️` = `stylelint2.configs.configs`
   - `🟣` = `stylelint2.configs.all`
 
-| Rule                                                                                                                               | Fix | Preset key |
-| ---------------------------------------------------------------------------------------------------------------------------------- | :-: | :--------- |
-| [`stylelint`](https://nick2bad4u.github.io/eslint-plugin-stylelint/docs/rules/stylelint)                                           |  🔧 | 🟡 🎨 🟣   |
-| [`prefer-stylelint-define-config`](https://nick2bad4u.github.io/eslint-plugin-stylelint/docs/rules/prefer-stylelint-define-config) |  🔧 | 🟡 🛠️ 🟣  |
+| Rule                                                                                                                                                                   | Fix | Preset key |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-: | :--------- |
+| [`stylelint`](https://nick2bad4u.github.io/eslint-plugin-stylelint/docs/rules/stylelint)                                                                               |  🔧 | 🟡 🎨 🟣   |
+| [`prefer-stylelint-define-config`](https://nick2bad4u.github.io/eslint-plugin-stylelint/docs/rules/prefer-stylelint-define-config)                                     |  🔧 | 🟡 🛠️ 🟣  |
+| [`prefer-stylelint-report-descriptionless-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint/docs/rules/prefer-stylelint-report-descriptionless-disables) |  🔧 | 🟡 🛠️ 🟣  |
+| [`prefer-stylelint-report-invalid-scope-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint/docs/rules/prefer-stylelint-report-invalid-scope-disables)     |  🔧 | 🟡 🛠️ 🟣  |
+| [`prefer-stylelint-report-needless-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint/docs/rules/prefer-stylelint-report-needless-disables)               |  🔧 | 🟡 🛠️ 🟣  |
+| [`prefer-stylelint-report-unscoped-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint/docs/rules/prefer-stylelint-report-unscoped-disables)               |  🔧 | 🟡 🛠️ 🟣  |
 
 ## Why use this plugin?
 
@@ -112,6 +124,8 @@ Use this plugin when you want ESLint to become the single command and editor int
 - CSS issues from Stylelint
 - Stylelint config authoring issues
 
+This package is strongest when you want repo-level consistency around both stylesheet linting and Stylelint config hygiene.
+
 If your team prefers running Stylelint separately, this package may be unnecessary.
 
 ## Documentation
@@ -119,7 +133,12 @@ If your team prefers running Stylelint separately, this package may be unnecessa
 - [Overview](./docs/rules/overview.md)
 - [Getting started](./docs/rules/getting-started.md)
 - [Presets](./docs/rules/presets/index.md)
-- [Rule docs](./docs/rules/stylelint.md)
+- [stylelint rule docs](./docs/rules/stylelint.md)
+- [prefer-stylelint-define-config](./docs/rules/prefer-stylelint-define-config.md)
+- [prefer-stylelint-report-descriptionless-disables](./docs/rules/prefer-stylelint-report-descriptionless-disables.md)
+- [prefer-stylelint-report-invalid-scope-disables](./docs/rules/prefer-stylelint-report-invalid-scope-disables.md)
+- [prefer-stylelint-report-needless-disables](./docs/rules/prefer-stylelint-report-needless-disables.md)
+- [prefer-stylelint-report-unscoped-disables](./docs/rules/prefer-stylelint-report-unscoped-disables.md)
 
 ## Contributors ✨
 

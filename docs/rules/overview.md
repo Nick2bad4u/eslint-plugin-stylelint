@@ -11,6 +11,8 @@ The initial rule set focuses on two high-value workflows:
 
 - surface Stylelint diagnostics through ESLint with autofix support
 - standardize modern `stylelint-define-config` usage in Stylelint config modules
+- require Stylelint config files to report disable comments that lack a reason
+- require the full family of Stylelint disable-comment reporting safeguards in config files
 
 ## Installation
 
@@ -46,6 +48,10 @@ export default [
 
 - [`stylelint`](./stylelint.md)
 - [`prefer-stylelint-define-config`](./prefer-stylelint-define-config.md)
+- [`prefer-stylelint-report-descriptionless-disables`](./prefer-stylelint-report-descriptionless-disables.md)
+- [`prefer-stylelint-report-invalid-scope-disables`](./prefer-stylelint-report-invalid-scope-disables.md)
+- [`prefer-stylelint-report-needless-disables`](./prefer-stylelint-report-needless-disables.md)
+- [`prefer-stylelint-report-unscoped-disables`](./prefer-stylelint-report-unscoped-disables.md)
 
 ## Next steps
 

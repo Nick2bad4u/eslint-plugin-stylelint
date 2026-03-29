@@ -56,6 +56,33 @@ const config: Config = {
             respectPrefersColorScheme: true,
         },
         footer: {
+            links: [
+                {
+                    items: [
+                        { label: "Overview", to: "/docs/intro" },
+                        { label: "Rules", to: "/docs/rules/overview" },
+                        { label: "Benchmarks", to: "/docs/benchmarks" },
+                    ],
+                    title: "Docs",
+                },
+                {
+                    items: [
+                        {
+                            href: "https://github.com/Nick2bad4u/eslint-plugin-stylelint",
+                            label: "GitHub",
+                        },
+                        {
+                            href: "https://www.npmjs.com/package/eslint-plugin-stylelint-2",
+                            label: "npm",
+                        },
+                        {
+                            href: "https://stylelint.io/",
+                            label: "Stylelint",
+                        },
+                    ],
+                    title: "Project",
+                },
+            ],
             copyright: `© ${new Date().getFullYear()} Nick2bad4u`,
         },
         image: "img/logo.png",
@@ -68,6 +95,10 @@ const config: Config = {
                 {
                     label: "Rules",
                     to: "/docs/rules/overview",
+                },
+                {
+                    label: "Benchmarks",
+                    to: "/docs/benchmarks",
                 },
                 {
                     href: "https://github.com/Nick2bad4u/eslint-plugin-stylelint",

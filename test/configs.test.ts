@@ -55,4 +55,26 @@ describe("stylelint-2 plugin configs", () => {
         expect(stylelint2Plugin.configs.recommended).toHaveLength(2);
         expect(stylelint2Plugin.configs.all).toHaveLength(2);
     });
+
+    it("keeps the stylesheet preset focused on the bridge rule only", () => {
+        expect(stylelint2Plugin.configs.stylesheets).toMatchObject({
+            rules: {
+                "stylelint-2/stylelint": "error",
+            },
+        });
+    });
+
+    it("keeps the config preset focused on the config-hygiene rules", () => {
+        expect(stylelint2Plugin.configs.configs).toMatchObject({
+            rules: {
+                "stylelint-2/prefer-stylelint-define-config": "warn",
+                "stylelint-2/prefer-stylelint-report-descriptionless-disables":
+                    "warn",
+                "stylelint-2/prefer-stylelint-report-invalid-scope-disables":
+                    "warn",
+                "stylelint-2/prefer-stylelint-report-needless-disables": "warn",
+                "stylelint-2/prefer-stylelint-report-unscoped-disables": "warn",
+            },
+        });
+    });
 });

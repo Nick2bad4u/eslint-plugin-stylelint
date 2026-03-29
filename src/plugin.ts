@@ -99,6 +99,14 @@ const configsPreset: Linter.Config = {
     },
     rules: {
         [`${pluginNamespace}/prefer-stylelint-define-config`]: "warn",
+        [`${pluginNamespace}/prefer-stylelint-report-descriptionless-disables`]:
+            "warn",
+        [`${pluginNamespace}/prefer-stylelint-report-invalid-scope-disables`]:
+            "warn",
+        [`${pluginNamespace}/prefer-stylelint-report-needless-disables`]:
+            "warn",
+        [`${pluginNamespace}/prefer-stylelint-report-unscoped-disables`]:
+            "warn",
     },
 };
 

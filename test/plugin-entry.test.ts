@@ -41,7 +41,14 @@ describe("plugin entry module", () => {
             Object.keys(stylelint2Plugin.rules).toSorted((left, right) =>
                 left.localeCompare(right)
             )
-        ).toStrictEqual(["prefer-stylelint-define-config", "stylelint"]);
+        ).toStrictEqual([
+            "prefer-stylelint-define-config",
+            "prefer-stylelint-report-descriptionless-disables",
+            "prefer-stylelint-report-invalid-scope-disables",
+            "prefer-stylelint-report-needless-disables",
+            "prefer-stylelint-report-unscoped-disables",
+            "stylelint",
+        ]);
     });
 
     it("resolves the package through self-reference ESM import", async () => {

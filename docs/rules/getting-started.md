@@ -28,7 +28,7 @@ export default [
 It currently adds:
 
 1. a CSS-targeted config that enables `stylelint-2/stylelint`
-2. a config-file-targeted config that enables `stylelint-2/prefer-stylelint-define-config`
+2. a config-file-targeted config that enables the Stylelint config authoring rules
 
 ## Stylesheets only
 
@@ -53,6 +53,14 @@ export default [
     stylelint2.configs.configs,
 ];
 ```
+
+That preset currently enables:
+
+- `stylelint-2/prefer-stylelint-define-config`
+- `stylelint-2/prefer-stylelint-report-descriptionless-disables`
+- `stylelint-2/prefer-stylelint-report-invalid-scope-disables`
+- `stylelint-2/prefer-stylelint-report-needless-disables`
+- `stylelint-2/prefer-stylelint-report-unscoped-disables`
 
 ## Adding Stylelint options
 

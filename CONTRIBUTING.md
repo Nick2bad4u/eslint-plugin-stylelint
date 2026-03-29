@@ -108,9 +108,9 @@ Verification flow:
 npx vitest run test/plugin-contract-snapshots.test.ts test/rule-metadata-snapshots.test.ts test/readme-rules-table-sync.test.ts test/docs-heading-snapshots.test.ts
 ```
 
-For detailed design and review guidance, see
-[`docs/rules/guides/snapshot-testing.md`](./docs/rules/guides/snapshot-testing.md).
-
+For examples of explicit fixture and rule-doc sync policy, refer to
+[`docs/rules/getting-started.md`](./docs/rules/getting-started.md) and
+[`docs/rules/presets/index.md`](./docs/rules/presets/index.md).
 Optional focused checks:
 
 - `npm run mutation:test` for Stryker mutation testing

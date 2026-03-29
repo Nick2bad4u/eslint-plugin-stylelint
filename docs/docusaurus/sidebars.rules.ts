@@ -80,6 +80,26 @@ const sidebars: SidebarsConfig = {
                     label: "prefer-stylelint-define-config",
                     type: "doc",
                 },
+                {
+                    id: "prefer-stylelint-report-descriptionless-disables",
+                    label: "prefer-stylelint-report-descriptionless-disables",
+                    type: "doc",
+                },
+                {
+                    id: "prefer-stylelint-report-invalid-scope-disables",
+                    label: "prefer-stylelint-report-invalid-scope-disables",
+                    type: "doc",
+                },
+                {
+                    id: "prefer-stylelint-report-needless-disables",
+                    label: "prefer-stylelint-report-needless-disables",
+                    type: "doc",
+                },
+                {
+                    id: "prefer-stylelint-report-unscoped-disables",
+                    label: "prefer-stylelint-report-unscoped-disables",
+                    type: "doc",
+                },
             ],
         },
     ],

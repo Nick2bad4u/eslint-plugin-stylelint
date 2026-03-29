@@ -20,6 +20,16 @@ describe("rule docs integrity", () => {
         }
     });
 
+    it("keeps one rule test file per registered rule", () => {
+        const testDir = path.join(process.cwd(), "test");
+
+        for (const ruleName of Object.keys(stylelint2Plugin.rules)) {
+            const expectedPath = path.join(testDir, `${ruleName}.test.ts`);
+
+            expect(fs.existsSync(expectedPath)).toBeTruthy();
+        }
+    });
+
     it("keeps docs urls aligned with the canonical docs helper", () => {
         for (const [ruleName, ruleModule] of Object.entries(
             stylelint2Plugin.rules
