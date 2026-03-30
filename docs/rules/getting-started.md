@@ -30,29 +30,34 @@ It currently adds:
 1. a CSS-targeted config that enables `stylelint-2/stylelint`
 2. a config-file-targeted config that enables the Stylelint config authoring rules
 
-## Stylesheets only
+## Stylelint bridge only
 
-If you only want the Stylelint bridge for `.css` files:
+If you only want the Stylelint bridge for stylesheet files:
 
 ```ts
 import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
-    stylelint2.configs.stylesheets,
+    stylelint2.configs.stylelintOnly,
 ];
 ```
 
 ## Stylelint config files only
 
-If you only want the config-authoring rule:
+If you only want the config-authoring rules and no stylesheet bridge:
 
 ```ts
 import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
-    stylelint2.configs.configs,
+    stylelint2.configs.configuration,
 ];
 ```
+
+Legacy aliases remain supported:
+
+- `stylelint2.configs.stylesheets` → `stylelint2.configs.stylelintOnly`
+- `stylelint2.configs.configs` → `stylelint2.configs.configuration`
 
 That preset currently enables:
 
@@ -73,7 +78,7 @@ import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
     {
-        ...stylelint2.configs.stylesheets,
+        ...stylelint2.configs.stylelintOnly,
         rules: {
             "stylelint-2/stylelint": [
                 "error",

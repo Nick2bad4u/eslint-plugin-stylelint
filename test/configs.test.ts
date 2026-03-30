@@ -34,12 +34,12 @@ describe("stylelint-2 plugin configs", () => {
     });
 
     it("keeps stylesheet and config presets focused on different file sets", () => {
-        expect(stylelint2Plugin.configs.stylesheets).toMatchObject({
+        expect(stylelint2Plugin.configs.stylelintOnly).toMatchObject({
             files: ["**/*.css"],
             language: "css/css",
         });
 
-        expect(stylelint2Plugin.configs.configs).toMatchObject({
+        expect(stylelint2Plugin.configs.configuration).toMatchObject({
             files: [
                 "**/stylelint.config.{js,mjs,cjs,ts,mts,cts}",
                 "**/.stylelintrc.{js,mjs,cjs,ts,mts,cts}",
@@ -57,7 +57,7 @@ describe("stylelint-2 plugin configs", () => {
     });
 
     it("keeps the stylesheet preset focused on the bridge rule only", () => {
-        expect(stylelint2Plugin.configs.stylesheets).toMatchObject({
+        expect(stylelint2Plugin.configs.stylelintOnly).toMatchObject({
             rules: {
                 "stylelint-2/stylelint": "error",
             },
@@ -65,7 +65,7 @@ describe("stylelint-2 plugin configs", () => {
     });
 
     it("keeps the config preset focused on the config-hygiene rules", () => {
-        expect(stylelint2Plugin.configs.configs).toMatchObject({
+        expect(stylelint2Plugin.configs.configuration).toMatchObject({
             rules: {
                 "stylelint-2/disallow-stylelint-formatter": "warn",
                 "stylelint-2/disallow-stylelint-ignore-disables": "warn",
@@ -78,5 +78,14 @@ describe("stylelint-2 plugin configs", () => {
                 "stylelint-2/prefer-stylelint-report-unscoped-disables": "warn",
             },
         });
+    });
+
+    it("keeps the legacy alias presets wired to the preferred preset names", () => {
+        expect(stylelint2Plugin.configs.stylesheets).toBe(
+            stylelint2Plugin.configs.stylelintOnly
+        );
+        expect(stylelint2Plugin.configs.configs).toBe(
+            stylelint2Plugin.configs.configuration
+        );
     });
 });

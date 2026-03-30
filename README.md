@@ -30,12 +30,17 @@ export default [
 
 ## Presets
 
-| Preset                           | Purpose                                                            |
-| -------------------------------- | ------------------------------------------------------------------ |
-| `stylelint2.configs.recommended` | Enable stylesheet linting plus Stylelint config authoring guidance |
-| `stylelint2.configs.stylesheets` | Enable only the Stylelint bridge rule for CSS files                |
-| `stylelint2.configs.configs`     | Enable only the Stylelint config authoring rules                   |
-| `stylelint2.configs.all`         | Currently the same as `recommended`                                |
+| Preset                                                                       | Purpose                                                                           |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [`stylelint2.configs.recommended`](./docs/rules/presets/recommended.md)      | Enable stylesheet linting plus Stylelint config authoring guidance                |
+| [`stylelint2.configs.stylelintOnly`](./docs/rules/presets/stylelint-only.md) | Enable only the Stylelint bridge workflow for stylesheets and ESLint-side autofix |
+| [`stylelint2.configs.configuration`](./docs/rules/presets/configuration.md)  | Enable only the Stylelint config authoring rules, with no stylesheet bridge       |
+| [`stylelint2.configs.all`](./docs/rules/presets/all.md)                      | Enable every preset entry currently shipped by this plugin                        |
+
+Legacy aliases remain available:
+
+- `stylelint2.configs.stylesheets` → `stylelint2.configs.stylelintOnly`
+- `stylelint2.configs.configs` → `stylelint2.configs.configuration`
 
 ## Configuration examples
 
@@ -49,23 +54,23 @@ export default [
 ];
 ```
 
-### Stylesheets only
+### Stylelint bridge only
 
 ```ts
 import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
-    stylelint2.configs.stylesheets,
+    stylelint2.configs.stylelintOnly,
 ];
 ```
 
-### Stylelint config files only
+### Configuration only
 
 ```ts
 import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
-    stylelint2.configs.configs,
+    stylelint2.configs.configuration,
 ];
 ```
 
@@ -86,7 +91,7 @@ import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
     {
-        ...stylelint2.configs.stylesheets,
+        ...stylelint2.configs.stylelintOnly,
         rules: {
             "stylelint-2/stylelint": [
                 "error",
@@ -106,21 +111,21 @@ export default [
   - `🔧` = autofixable
   - `—` = report only
 - `Preset key` legend:
-  - `🟡` = `stylelint2.configs.recommended`
-  - `🎨` = `stylelint2.configs.stylesheets`
-  - `🛠️` = `stylelint2.configs.configs`
-  - `🟣` = `stylelint2.configs.all`
+  - [`🟡`](./docs/rules/presets/recommended.md) = [`stylelint2.configs.recommended`](./docs/rules/presets/recommended.md)
+  - [`🎨`](./docs/rules/presets/stylelint-only.md) = [`stylelint2.configs.stylelintOnly`](./docs/rules/presets/stylelint-only.md)
+  - [`🔧`](./docs/rules/presets/configuration.md) = [`stylelint2.configs.configuration`](./docs/rules/presets/configuration.md)
+  - [`🟣`](./docs/rules/presets/all.md) = [`stylelint2.configs.all`](./docs/rules/presets/all.md)
 
-| Rule                                                                                                                                                                     | Fix | Preset key |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-: | :--------- |
-| [`stylelint`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/stylelint)                                                                               |  🔧 | 🟡 🎨 🟣   |
-| [`disallow-stylelint-formatter`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-formatter)                                         |  🔧 | 🟡 🛠️ 🟣  |
-| [`disallow-stylelint-ignore-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-ignore-disables)                             |  🔧 | 🟡 🛠️ 🟣  |
-| [`prefer-stylelint-define-config`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-define-config)                                     |  🔧 | 🟡 🛠️ 🟣  |
-| [`prefer-stylelint-report-descriptionless-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-descriptionless-disables) |  🔧 | 🟡 🛠️ 🟣  |
-| [`prefer-stylelint-report-invalid-scope-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-invalid-scope-disables)     |  🔧 | 🟡 🛠️ 🟣  |
-| [`prefer-stylelint-report-needless-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-needless-disables)               |  🔧 | 🟡 🛠️ 🟣  |
-| [`prefer-stylelint-report-unscoped-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-unscoped-disables)               |  🔧 | 🟡 🛠️ 🟣  |
+| Rule                                                                                                                                                                     | Fix | Preset key                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-: | :----------------------------------------------------------------------------------------------------------------------- |
+| [`stylelint`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/stylelint)                                                                               |  🔧 | [🟡](./docs/rules/presets/recommended.md) [🎨](./docs/rules/presets/stylelint-only.md) [🟣](./docs/rules/presets/all.md) |
+| [`disallow-stylelint-formatter`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-formatter)                                         |  🔧 | [🟡](./docs/rules/presets/recommended.md) [🔧](./docs/rules/presets/configuration.md) [🟣](./docs/rules/presets/all.md)  |
+| [`disallow-stylelint-ignore-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-ignore-disables)                             |  🔧 | [🟡](./docs/rules/presets/recommended.md) [🔧](./docs/rules/presets/configuration.md) [🟣](./docs/rules/presets/all.md)  |
+| [`prefer-stylelint-define-config`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-define-config)                                     |  🔧 | [🟡](./docs/rules/presets/recommended.md) [🔧](./docs/rules/presets/configuration.md) [🟣](./docs/rules/presets/all.md)  |
+| [`prefer-stylelint-report-descriptionless-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-descriptionless-disables) |  🔧 | [🟡](./docs/rules/presets/recommended.md) [🔧](./docs/rules/presets/configuration.md) [🟣](./docs/rules/presets/all.md)  |
+| [`prefer-stylelint-report-invalid-scope-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-invalid-scope-disables)     |  🔧 | [🟡](./docs/rules/presets/recommended.md) [🔧](./docs/rules/presets/configuration.md) [🟣](./docs/rules/presets/all.md)  |
+| [`prefer-stylelint-report-needless-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-needless-disables)               |  🔧 | [🟡](./docs/rules/presets/recommended.md) [🔧](./docs/rules/presets/configuration.md) [🟣](./docs/rules/presets/all.md)  |
+| [`prefer-stylelint-report-unscoped-disables`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-unscoped-disables)               |  🔧 | [🟡](./docs/rules/presets/recommended.md) [🔧](./docs/rules/presets/configuration.md) [🟣](./docs/rules/presets/all.md)  |
 
 ## Why use this plugin?
 

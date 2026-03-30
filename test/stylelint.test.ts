@@ -13,7 +13,8 @@ const stylelintConfigFilePath = fileURLToPath(
     new URL("fixtures/stylelint/short-hex.config.mjs", import.meta.url)
 );
 /* eslint-enable total-functions/no-partial-url-constructor -- Re-enable after the local fixture path is resolved. */
-const stylesheetsConfig = stylelint2Plugin.configs.stylesheets as Linter.Config;
+const stylesheetsConfig = stylelint2Plugin.configs
+    .stylelintOnly as Linter.Config;
 
 const createCssLintEngine = (fix: boolean): ESLint =>
     new ESLint({

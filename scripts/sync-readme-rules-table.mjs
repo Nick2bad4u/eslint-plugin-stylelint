@@ -11,21 +11,54 @@ import { resolve } from "node:path";
 import builtPlugin from "../dist/plugin.js";
 const stylelint2ConfigMetadataByName = {
     all: { icon: "🟣" },
-    configs: { icon: "🛠️" },
+    configuration: { icon: "🔧" },
     recommended: { icon: "🟡" },
-    stylesheets: { icon: "🎨" },
+    stylelintOnly: { icon: "🎨" },
 };
+/** @type {readonly (keyof typeof presetDocsByName)[]} */
 const stylelint2ConfigNamesByReadmeOrder = [
     "recommended",
-    "stylesheets",
-    "configs",
+    "stylelintOnly",
+    "configuration",
     "all",
 ];
 const stylelint2ConfigReferenceToName = {
     "stylelint2.configs.all": "all",
-    "stylelint2.configs.configs": "configs",
+    "stylelint2.configs.configuration": "configuration",
+    "stylelint2.configs.configs": "configuration",
     "stylelint2.configs.recommended": "recommended",
-    "stylelint2.configs.stylesheets": "stylesheets",
+    "stylelint2.configs.stylelintOnly": "stylelintOnly",
+    "stylelint2.configs.stylesheets": "stylelintOnly",
+};
+const presetDocsByName = {
+    all: {
+        href: "./docs/rules/presets/all.md",
+        publicName: "stylelint2.configs.all",
+    },
+    configuration: {
+        href: "./docs/rules/presets/configuration.md",
+        publicName: "stylelint2.configs.configuration",
+    },
+    recommended: {
+        href: "./docs/rules/presets/recommended.md",
+        publicName: "stylelint2.configs.recommended",
+    },
+    stylelintOnly: {
+        href: "./docs/rules/presets/stylelint-only.md",
+        publicName: "stylelint2.configs.stylelintOnly",
+    },
+};
+
+/** @param {keyof typeof presetDocsByName} presetName */
+const toPresetLegendLine = (presetName) => {
+    const preset = presetDocsByName[presetName];
+    const icon = stylelint2ConfigMetadataByName[presetName]?.icon;
+
+    if (preset === undefined || icon === undefined) {
+        throw new TypeError(`Unknown preset '${presetName}'.`);
+    }
+
+    return `  - [\`${icon}\`](${preset.href}) — [\`${preset.publicName}\`](${preset.href})`;
 };
 
 const rulesSectionHeading = "## Rules";
@@ -104,8 +137,13 @@ const getPresetIndicator = (ruleModule) => {
             /** @type {keyof typeof stylelint2ConfigMetadataByName} */ (
                 configName
             );
+        const presetLink = /** @type {keyof typeof presetDocsByName} */ (
+            configName
+        );
 
-        icons.push(stylelint2ConfigMetadataByName[metadataKey].icon);
+        icons.push(
+            `[${stylelint2ConfigMetadataByName[metadataKey].icon}](${presetDocsByName[presetLink].href})`
+        );
     }
 
     return icons.join(" ");
@@ -178,14 +216,15 @@ export const generateReadmeRulesSectionFromRules = (rules) => {
     return [
         "## Rules",
         "",
-        "- `Fix` legend:",
-        "  - `🔧` = autofixable",
-        "  - `—` = report only",
-        "- `Preset key` legend:",
-        "  - `🟡` = `stylelint2.configs.recommended`",
-        "  - `🎨` = `stylelint2.configs.stylesheets`",
-        "  - `🛠️` = `stylelint2.configs.configs`",
-        "  - `🟣` = `stylelint2.configs.all`",
+        "Fix legend:",
+        "- `🔧` = autofixable",
+        "- `—` = report only",
+        "",
+        "Preset key legend:",
+        ...stylelint2ConfigNamesByReadmeOrder.map(
+            /** @param {keyof typeof presetDocsByName} presetName */
+            (presetName) => toPresetLegendLine(presetName)
+        ),
         "",
         "| Rule | Fix | Preset key |",
         "| --- | :-: | :-- |",

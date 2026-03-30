@@ -6,8 +6,10 @@
 /** Canonical flat-config preset keys exposed through `plugin.configs`. */
 export const stylelint2ConfigNames = [
     "all",
+    "configuration",
     "configs",
     "recommended",
+    "stylelintOnly",
     "stylesheets",
 ] as const;
 
@@ -30,20 +32,30 @@ export const stylelint2ConfigMetadataByName: Readonly<
         presetName: "stylelint2:all",
         readmeOrder: 4,
     },
-    configs: {
-        icon: "🛠️",
-        presetName: "stylelint2:configs",
+    configuration: {
+        icon: "🔧",
+        presetName: "stylelint2:configuration",
         readmeOrder: 3,
+    },
+    configs: {
+        icon: "🔧",
+        presetName: "stylelint2:configs",
+        readmeOrder: 6,
     },
     recommended: {
         icon: "🟡",
         presetName: "stylelint2:recommended",
         readmeOrder: 1,
     },
+    stylelintOnly: {
+        icon: "🎨",
+        presetName: "stylelint2:stylelintOnly",
+        readmeOrder: 2,
+    },
     stylesheets: {
         icon: "🎨",
         presetName: "stylelint2:stylesheets",
-        readmeOrder: 2,
+        readmeOrder: 5,
     },
 };
 
@@ -51,22 +63,26 @@ export const stylelint2ConfigMetadataByName: Readonly<
 export const stylelint2ConfigNamesByReadmeOrder: readonly Stylelint2ConfigName[] =
     [
         "recommended",
-        "stylesheets",
-        "configs",
+        "stylelintOnly",
+        "configuration",
         "all",
     ];
 
 /** Fully-qualified preset references used in rule metadata. */
 export const stylelint2ConfigReferenceToName: Readonly<{
     "stylelint2.configs.all": "all";
-    "stylelint2.configs.configs": "configs";
+    "stylelint2.configs.configuration": "configuration";
+    "stylelint2.configs.configs": "configuration";
     "stylelint2.configs.recommended": "recommended";
-    "stylelint2.configs.stylesheets": "stylesheets";
+    "stylelint2.configs.stylelintOnly": "stylelintOnly";
+    "stylelint2.configs.stylesheets": "stylelintOnly";
 }> = {
     "stylelint2.configs.all": "all",
-    "stylelint2.configs.configs": "configs",
+    "stylelint2.configs.configuration": "configuration",
+    "stylelint2.configs.configs": "configuration",
     "stylelint2.configs.recommended": "recommended",
-    "stylelint2.configs.stylesheets": "stylesheets",
+    "stylelint2.configs.stylelintOnly": "stylelintOnly",
+    "stylelint2.configs.stylesheets": "stylelintOnly",
 };
 
 /** Fully-qualified preset reference type accepted in docs metadata. */

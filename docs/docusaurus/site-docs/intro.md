@@ -32,6 +32,6 @@ This plugin reduces that split by exposing Stylelint diagnostics through ESLint 
 
 ## Recommended adoption order
 
-1. Start with `stylelint2.configs.stylesheets` if you only want the bridge.
+1. Start with `stylelint2.configs.stylelintOnly` if you only want the bridge.
 2. Move to `stylelint2.configs.recommended` when you also want config hygiene.
 3. Tune Stylelint itself before adding more plugin-side config rules.

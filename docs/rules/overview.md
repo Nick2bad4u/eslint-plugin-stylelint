@@ -38,12 +38,17 @@ export default [
 
 ## Included presets
 
-| Preset                           | Purpose                                                     |
-| -------------------------------- | ----------------------------------------------------------- |
-| `stylelint2.configs.recommended` | Stylesheet linting plus Stylelint config authoring guidance |
-| `stylelint2.configs.stylesheets` | Only run the Stylelint bridge rule on CSS files             |
-| `stylelint2.configs.configs`     | Only lint Stylelint config modules                          |
-| `stylelint2.configs.all`         | Currently the same as `recommended`                         |
+| Preset                                                            | Purpose                                                       |
+| ----------------------------------------------------------------- | ------------------------------------------------------------- |
+| [`stylelint2.configs.recommended`](./presets/recommended.md)      | Stylesheet linting plus Stylelint config authoring guidance   |
+| [`stylelint2.configs.stylelintOnly`](./presets/stylelint-only.md) | Only run the Stylelint bridge workflow for stylesheet files   |
+| [`stylelint2.configs.configuration`](./presets/configuration.md)  | Only lint Stylelint config modules, with no stylesheet bridge |
+| [`stylelint2.configs.all`](./presets/all.md)                      | Enable every preset entry currently shipped by this plugin    |
+
+Legacy aliases remain supported:
+
+- `stylelint2.configs.stylesheets` → `stylelint2.configs.stylelintOnly`
+- `stylelint2.configs.configs` → `stylelint2.configs.configuration`
 
 ## Included rules
 

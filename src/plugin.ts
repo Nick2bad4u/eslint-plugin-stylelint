@@ -68,13 +68,13 @@ const stylelint2Plugin: ESLint.Plugin & {
     rules: eslintPluginRules,
 };
 
-const stylesheetsPreset: Linter.Config = {
+const stylelintOnlyPreset: Linter.Config = {
     files: [...stylesheetFiles],
     language: "css/css",
     languageOptions: {
         tolerant: true,
     },
-    name: stylelint2ConfigMetadataByName.stylesheets.presetName,
+    name: stylelint2ConfigMetadataByName.stylelintOnly.presetName,
     plugins: {
         css,
         [pluginNamespace]: stylelint2Plugin,
@@ -84,7 +84,7 @@ const stylesheetsPreset: Linter.Config = {
     },
 };
 
-const configsPreset: Linter.Config = {
+const configurationPreset: Linter.Config = {
     files: [...configFiles],
     languageOptions: {
         parser: tsParser,
@@ -93,7 +93,7 @@ const configsPreset: Linter.Config = {
             sourceType: "module",
         },
     },
-    name: stylelint2ConfigMetadataByName.configs.presetName,
+    name: stylelint2ConfigMetadataByName.configuration.presetName,
     plugins: {
         [pluginNamespace]: stylelint2Plugin,
     },
@@ -113,10 +113,12 @@ const configsPreset: Linter.Config = {
 };
 
 stylelint2Plugin.configs = {
-    all: [stylesheetsPreset, configsPreset],
-    configs: configsPreset,
-    recommended: [stylesheetsPreset, configsPreset],
-    stylesheets: stylesheetsPreset,
+    all: [stylelintOnlyPreset, configurationPreset],
+    configuration: configurationPreset,
+    configs: configurationPreset,
+    recommended: [stylelintOnlyPreset, configurationPreset],
+    stylelintOnly: stylelintOnlyPreset,
+    stylesheets: stylelintOnlyPreset,
 };
 
 /** Fully assembled public plugin contract. */

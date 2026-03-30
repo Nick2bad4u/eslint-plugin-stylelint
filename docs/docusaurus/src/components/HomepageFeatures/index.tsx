@@ -6,30 +6,75 @@ import Heading from "@theme/Heading";
 
 import styles from "./styles.module.css";
 
-type Feature = Readonly<{
+type ExternalFeature = Readonly<{
+    badge: string;
     description: string;
+    highlights: readonly string[];
+    href: string;
+    linkLabel: string;
+    meta: string;
+    toneClassName: string;
+    title: string;
+}>;
+
+type InternalFeature = Readonly<{
+    badge: string;
+    description: string;
+    highlights: readonly string[];
+    linkLabel: string;
+    meta: string;
+    toneClassName: string;
     title: string;
     to: string;
 }>;
 
+type Feature = ExternalFeature | InternalFeature;
+
 const features: readonly Feature[] = [
     {
+        badge: "Docs surface",
         description:
-            "Surface Stylelint findings in the same ESLint run and let `eslint --fix` apply Stylelint edit info when available.",
-        title: "Stylelint bridge",
-        to: "/docs/rules/stylelint",
+            "Start with the rule catalog and preset guides when you need to answer what ships in each rollout path, fast.",
+        highlights: [
+            "Preset key legend linked to each preset guide",
+            "Numbered rule catalog with quick scanning",
+            "Overview and getting-started paths for rollout planning",
+        ],
+        linkLabel: "Browse preset and rule docs ↗",
+        meta: "Reference-driven adoption path",
+        title: "📚 Rule reference hub",
+        toneClassName: styles["cardDocs"] ?? "",
+        to: "/docs/rules/overview",
     },
     {
+        badge: "Developer surface",
         description:
-            "Standardize modern Stylelint config authoring with `defineConfig()` and related config-hygiene rules.",
-        title: "Config hygiene",
-        to: "/docs/config-authoring",
+            "Open the public API and internal helpers when you need to trace how presets, rule metadata, and docs wiring fit together.",
+        highlights: [
+            "Generated TypeDoc with public and internal groupings",
+            "Developer docs that stay collapsed until you need them",
+            "Source-oriented navigation for rule and preset architecture",
+        ],
+        linkLabel: "Open developer docs ↗",
+        meta: "API and implementation details",
+        title: "🧩 Developer & API surface",
+        toneClassName: styles["cardDeveloper"] ?? "",
+        to: "/docs/developer/api",
     },
     {
+        badge: "Validation tools",
         description:
-            "Keep stylesheet linting, docs generation, and performance checks in one repo-level workflow.",
-        title: "Tooling-friendly",
-        to: "/docs/benchmarks",
+            "Validate the docs against real resolved configs with the inspector tooling instead of trusting prose alone.",
+        highlights: [
+            "ESLint config inspector for flat-config output",
+            "Stylelint inspector for config-level behavior",
+            "Useful when checking rollout diffs before enabling presets",
+        ],
+        linkLabel: "Launch the inspector tools ↗",
+        meta: "Generated tooling for reality checks",
+        title: "🔎 Inspectors & rollout tooling",
+        href: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/stylelint-inspector/",
+        toneClassName: styles["cardInspectors"] ?? "",
     },
 ];
 
@@ -38,6 +83,11 @@ export default function HomepageFeatures(): JSX.Element {
     const featuresClassName = styles["features"] ?? "";
     const gridClassName = styles["grid"] ?? "";
     const linkClassName = styles["link"] ?? "";
+    const badgeClassName = styles["badge"] ?? "";
+    const bodyClassName = styles["body"] ?? "";
+    const footerClassName = styles["footer"] ?? "";
+    const listClassName = styles["list"] ?? "";
+    const metaClassName = styles["meta"] ?? "";
 
     return (
         <section className={featuresClassName}>
@@ -46,13 +96,41 @@ export default function HomepageFeatures(): JSX.Element {
                     {features.map((feature) => (
                         <article
                             key={feature.title}
-                            className={clsx("card", cardClassName)}
+                            className={clsx(
+                                "card",
+                                cardClassName,
+                                feature.toneClassName
+                            )}
+                            data-sb-hover="lift"
                         >
+                            <p className={badgeClassName}>{feature.badge}</p>
                             <Heading as="h2">{feature.title}</Heading>
-                            <p>{feature.description}</p>
-                            <Link className={linkClassName} to={feature.to}>
-                                Learn more →
-                            </Link>
+                            <p className={metaClassName}>{feature.meta}</p>
+                            <div className={bodyClassName}>
+                                <p>{feature.description}</p>
+                                <ul className={listClassName}>
+                                    {feature.highlights.map((highlight) => (
+                                        <li key={highlight}>{highlight}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className={footerClassName}>
+                                {"href" in feature ? (
+                                    <Link
+                                        className={linkClassName}
+                                        href={feature.href}
+                                    >
+                                        {feature.linkLabel}
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        className={linkClassName}
+                                        to={feature.to}
+                                    >
+                                        {feature.linkLabel}
+                                    </Link>
+                                )}
+                            </div>
                         </article>
                     ))}
                 </div>

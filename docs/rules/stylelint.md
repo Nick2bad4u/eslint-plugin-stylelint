@@ -59,7 +59,7 @@ import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
     {
-        ...stylelint2.configs.stylesheets,
+        ...stylelint2.configs.stylelintOnly,
         rules: {
             "stylelint-2/stylelint": [
                 "error",

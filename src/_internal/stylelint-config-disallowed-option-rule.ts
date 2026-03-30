@@ -88,7 +88,7 @@ export const createStylelintConfigDisallowedOptionRule = (
             docs: {
                 configs: [
                     "stylelint2.configs.recommended",
-                    "stylelint2.configs.configs",
+                    "stylelint2.configs.configuration",
                     "stylelint2.configs.all",
                 ],
                 description,

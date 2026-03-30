@@ -1,5 +1,5 @@
 {
-    "background_color": "#2E2A33",
+    "background_color": "#170724",
     "description": "eslint-plugin-stylelint-2 documentation and rule reference.",
     "display": "standalone",
     "icons": [
@@ -18,5 +18,5 @@
     "scope": ".",
     "short_name": "Stylelint2 Docs",
     "start_url": ".",
-    "theme_color": "#2E2A33"
+    "theme_color": "#170724"
 }

@@ -1,4 +1,50 @@
+import { readdirSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
+
+type SidebarDocItem = {
+    readonly id: string;
+    readonly label: string;
+    readonly type: "doc";
+};
+
+const sidebarDirectoryPath = dirname(fileURLToPath(import.meta.url));
+const rulesDirectoryPath = join(sidebarDirectoryPath, "..", "rules");
+const nonRuleDocIds = new Set(["getting-started", "overview"]);
+const pinnedRuleDocIds = ["stylelint"];
+const pinnedRuleDocIdSet = new Set(pinnedRuleDocIds);
+
+const isMarkdownFile = (fileName: string): boolean => fileName.endsWith(".md");
+const toRuleDocId = (fileName: string): string => fileName.slice(0, -3);
+
+const discoveredRuleDocIds = readdirSync(rulesDirectoryPath, {
+    withFileTypes: true,
+})
+    .filter((entry) => entry.isFile() && isMarkdownFile(entry.name))
+    .map((entry) => toRuleDocId(entry.name))
+    .filter((ruleDocId) => !nonRuleDocIds.has(ruleDocId));
+
+const ruleDocIds = [
+    ...pinnedRuleDocIds.filter((ruleDocId) =>
+        discoveredRuleDocIds.includes(ruleDocId)
+    ),
+    ...discoveredRuleDocIds
+        .filter((ruleDocId) => !pinnedRuleDocIdSet.has(ruleDocId))
+        .sort((left, right) => left.localeCompare(right)),
+];
+
+const toNumberedRuleLabel = (ruleNumber: number, ruleDocId: string): string =>
+    `${String(ruleNumber).padStart(2, "0")} ${ruleDocId}`;
+
+const stylelintRuleItems: SidebarDocItem[] = ruleDocIds.map(
+    (ruleDocId, index) => ({
+        id: ruleDocId,
+        label: toNumberedRuleLabel(index + 1, ruleDocId),
+        type: "doc",
+    })
+);
 
 /** Complete sidebar structure for docs site navigation. */
 const sidebars: SidebarsConfig = {
@@ -17,7 +63,7 @@ const sidebars: SidebarsConfig = {
         },
         {
             className: "sb-cat-presets",
-            collapsed: true,
+            collapsed: false,
             customProps: {
                 badge: "presets",
             },
@@ -35,15 +81,15 @@ const sidebars: SidebarsConfig = {
                     type: "doc",
                 },
                 {
-                    className: "sb-preset-stylesheets",
-                    id: "presets/stylesheets",
-                    label: "🎨 Stylesheets",
+                    className: "sb-preset-stylelint-only",
+                    id: "presets/stylelint-only",
+                    label: "🎨 Stylelint bridge only",
                     type: "doc",
                 },
                 {
-                    className: "sb-preset-configs",
-                    id: "presets/configs",
-                    label: "🛠️ Configs",
+                    className: "sb-preset-configuration",
+                    id: "presets/configuration",
+                    label: "🔧 Configuration only",
                     type: "doc",
                 },
                 {
@@ -56,7 +102,7 @@ const sidebars: SidebarsConfig = {
         },
         {
             className: "sb-cat-rules",
-            collapsed: true,
+            collapsed: false,
             customProps: {
                 badge: "rules",
             },
@@ -67,48 +113,25 @@ const sidebars: SidebarsConfig = {
                 title: "Rule Reference",
                 slug: "/",
                 description:
-                    "Rule documentation for eslint-plugin-stylelint-2.",
+                    "Rule documentation for every eslint-plugin-stylelint-2 rule.",
             },
             items: [
                 {
-                    id: "stylelint",
+                    className: "sb-cat-rules-stylelint",
+                    collapsed: false,
+                    collapsible: true,
+                    customProps: {
+                        badge: "stylelint",
+                    },
+                    type: "category",
                     label: "stylelint",
-                    type: "doc",
-                },
-                {
-                    id: "disallow-stylelint-formatter",
-                    label: "disallow-stylelint-formatter",
-                    type: "doc",
-                },
-                {
-                    id: "disallow-stylelint-ignore-disables",
-                    label: "disallow-stylelint-ignore-disables",
-                    type: "doc",
-                },
-                {
-                    id: "prefer-stylelint-define-config",
-                    label: "prefer-stylelint-define-config",
-                    type: "doc",
-                },
-                {
-                    id: "prefer-stylelint-report-descriptionless-disables",
-                    label: "prefer-stylelint-report-descriptionless-disables",
-                    type: "doc",
-                },
-                {
-                    id: "prefer-stylelint-report-invalid-scope-disables",
-                    label: "prefer-stylelint-report-invalid-scope-disables",
-                    type: "doc",
-                },
-                {
-                    id: "prefer-stylelint-report-needless-disables",
-                    label: "prefer-stylelint-report-needless-disables",
-                    type: "doc",
-                },
-                {
-                    id: "prefer-stylelint-report-unscoped-disables",
-                    label: "prefer-stylelint-report-unscoped-disables",
-                    type: "doc",
+                    link: {
+                        type: "generated-index",
+                        title: "stylelint Rules",
+                        description:
+                            "Rules for bridging Stylelint into ESLint and standardizing Stylelint config authoring.",
+                    },
+                    items: stylelintRuleItems,
                 },
             ],
         },

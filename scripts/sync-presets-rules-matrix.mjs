@@ -12,6 +12,62 @@ import builtPlugin from "../dist/plugin.js";
 
 const matrixSectionHeading = "## Rule matrix";
 const presetIndexPath = resolve("docs", "rules", "presets", "index.md");
+const presetDocsByName = {
+    all: {
+        href: "./all.md",
+        icon: "🟣",
+        publicName: "stylelint2.configs.all",
+    },
+    configuration: {
+        href: "./configuration.md",
+        icon: "🔧",
+        publicName: "stylelint2.configs.configuration",
+    },
+    recommended: {
+        href: "./recommended.md",
+        icon: "🟡",
+        publicName: "stylelint2.configs.recommended",
+    },
+    stylelintOnly: {
+        href: "./stylelint-only.md",
+        icon: "🎨",
+        publicName: "stylelint2.configs.stylelintOnly",
+    },
+};
+
+/** @typedef {keyof typeof presetDocsByName} PresetDisplayName */
+
+/** @type {readonly PresetDisplayName[]} */
+const presetDisplayOrder = [
+    "recommended",
+    "stylelintOnly",
+    "configuration",
+    "all",
+];
+
+/** @param {PresetDisplayName} presetName */
+const toPresetMarkdownLink = (presetName) => {
+    const preset = presetDocsByName[presetName];
+
+    if (preset === undefined) {
+        throw new TypeError(`Unknown preset '${presetName}'.`);
+    }
+
+    return `[
+${preset.icon}
+](${preset.href})`.replace(/\n/gv, "");
+};
+
+/** @param {PresetDisplayName} presetName */
+const toPresetLegendLine = (presetName) => {
+    const preset = presetDocsByName[presetName];
+
+    if (preset === undefined) {
+        throw new TypeError(`Unknown preset '${presetName}'.`);
+    }
+
+    return `  - [\`${preset.icon}\`](${preset.href}) — [\`${preset.publicName}\`](${preset.href})`;
+};
 
 /** @param {string} markdown */
 const detectLineEnding = (markdown) =>
@@ -95,10 +151,29 @@ export const generatePresetsRulesMatrixSectionFromRules = () => {
         const fix = ruleModule.meta?.fixable === "code" ? "🔧" : "—";
         const presetIcons = [
             isRuleEnabledInPreset("recommended", ruleName) ? "🟡" : null,
-            isRuleEnabledInPreset("stylesheets", ruleName) ? "🎨" : null,
-            isRuleEnabledInPreset("configs", ruleName) ? "🛠️" : null,
+            isRuleEnabledInPreset("stylelintOnly", ruleName) ? "🎨" : null,
+            isRuleEnabledInPreset("configuration", ruleName) ? "🔧" : null,
             isRuleEnabledInPreset("all", ruleName) ? "🟣" : null,
         ]
+            .map((value) => {
+                if (value === null) {
+                    return null;
+                }
+
+                /** @type {PresetDisplayName | undefined} */
+                const presetName = presetDisplayOrder.find(
+                    /** @param {PresetDisplayName} candidate */
+                    (candidate) => presetDocsByName[candidate].icon === value
+                );
+
+                if (presetName === undefined) {
+                    throw new TypeError(
+                        `Unable to resolve preset icon '${value}'.`
+                    );
+                }
+
+                return toPresetMarkdownLink(presetName);
+            })
             .filter((value) => value !== null)
             .join(" ");
         const docsUrl = ruleModule.meta?.docs?.url;
@@ -113,14 +188,12 @@ export const generatePresetsRulesMatrixSectionFromRules = () => {
     return [
         "## Rule matrix",
         "",
-        "- `Fix` legend:",
-        "  - `🔧` = autofixable",
-        "  - `—` = report only",
-        "- `Preset key` legend:",
-        "  - `🟡` — `stylelint2.configs.recommended`",
-        "  - `🎨` — `stylelint2.configs.stylesheets`",
-        "  - `🛠️` — `stylelint2.configs.configs`",
-        "  - `🟣` — `stylelint2.configs.all`",
+        "Fix legend:",
+        "- `🔧` = autofixable",
+        "- `—` = report only",
+        "",
+        "Preset key legend:",
+        ...presetDisplayOrder.map(toPresetLegendLine),
         "",
         "| Rule | Fix | Preset key |",
         "| --- | :-: | :-- |",

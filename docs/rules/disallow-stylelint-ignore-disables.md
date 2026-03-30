@@ -58,7 +58,7 @@ await stylelint.lint({
 import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
-    stylelint2.configs.configs,
+    stylelint2.configs.configuration,
 ];
 ```
 

@@ -14,6 +14,13 @@ export default [
 ];
 ```
 
+## Related preset docs
+
+- [Presets overview](./index.md)
+- [Recommended preset](./recommended.md)
+- [Stylelint-only preset](./stylelint-only.md)
+- [Configuration-only preset](./configuration.md)
+
 ## Rules in this preset
 
 | Rule                                                                                                                                                                     | Fix |

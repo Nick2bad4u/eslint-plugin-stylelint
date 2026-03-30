@@ -28,13 +28,13 @@ export default [
 - a stylesheet config for `**/*.css`
 - a Stylelint config-file config for `stylelint.config.*` and `.stylelintrc.*`
 
-## Stylesheets only
+## Stylelint bridge only
 
 ```ts
 import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
-    stylelint2.configs.stylesheets,
+    stylelint2.configs.stylelintOnly,
 ];
 ```
 
@@ -44,9 +44,14 @@ export default [
 import stylelint2 from "eslint-plugin-stylelint-2";
 
 export default [
-    stylelint2.configs.configs,
+    stylelint2.configs.configuration,
 ];
 ```
+
+Legacy aliases remain supported:
+
+- `stylelint2.configs.stylesheets` → `stylelint2.configs.stylelintOnly`
+- `stylelint2.configs.configs` → `stylelint2.configs.configuration`
 
 ## Common next step
 

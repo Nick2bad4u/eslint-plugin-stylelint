@@ -1,6 +1,10 @@
 # configs
 
-Enable only the Stylelint config authoring rules.
+Legacy alias page for the preferred `configuration` preset.
+
+Use [`stylelint2.configs.configuration`](./configuration.md) for new documentation and examples.
+
+`stylelint2.configs.configs` remains supported as a backwards-compatible alias.
 
 ## Flat config example
 
@@ -11,6 +15,11 @@ export default [
     stylelint2.configs.configs,
 ];
 ```
+
+## Preferred docs
+
+- [Configuration-only preset](./configuration.md)
+- [Presets overview](./index.md)
 
 ## Rules in this preset
 

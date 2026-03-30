@@ -157,7 +157,7 @@ const stylelintRule: RuleModuleWithDocs<MessageIds, Options> = createTypedRule<
         docs: {
             configs: [
                 "stylelint2.configs.recommended",
-                "stylelint2.configs.stylesheets",
+                "stylelint2.configs.stylelintOnly",
                 "stylelint2.configs.all",
             ],
             description:

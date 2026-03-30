@@ -1,6 +1,10 @@
 # stylesheets
 
-Enable only the CSS-facing Stylelint bridge rule.
+Legacy alias page for the preferred `stylelintOnly` preset.
+
+Use [`stylelint2.configs.stylelintOnly`](./stylelint-only.md) for new documentation and examples.
+
+`stylelint2.configs.stylesheets` remains supported as a backwards-compatible alias.
 
 ## Flat config example
 
@@ -11,6 +15,11 @@ export default [
     stylelint2.configs.stylesheets,
 ];
 ```
+
+## Preferred docs
+
+- [Stylelint-only preset](./stylelint-only.md)
+- [Presets overview](./index.md)
 
 ## Rules in this preset
 

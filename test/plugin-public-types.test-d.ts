@@ -22,6 +22,8 @@ declare const pluginContract: Stylelint2Plugin;
 
 assertType<Stylelint2RuleName>("stylelint");
 assertType(pluginContract.configs.recommended);
+assertType(pluginContract.configs.stylelintOnly);
+assertType(pluginContract.configs.configuration);
 assertType(pluginContract.configs.stylesheets);
 assertType(pluginContract.configs.configs);
 assertType(pluginContract.meta.name);
