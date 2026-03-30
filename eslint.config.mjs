@@ -710,10 +710,10 @@ export default defineConfig([
     //     ],
     //     name: "Local Plugin Rules from Source",
     //     plugins: {
-    //         typefest: typefest,
+    //         "stylelint-2": stylelint2,
     //     },
     //     rules: {
-    //         ...typefest.configs.all.rules,
+    //         ...stylelint2.configs.all.rules,
     //     },
     // },
     // #endregion

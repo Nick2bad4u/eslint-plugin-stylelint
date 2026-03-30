@@ -11,27 +11,96 @@ const pluginConfigs =
     );
 
 /**
- * @param {string} configName
+ * @param {readonly string[]} argv
  *
- * @returns {FlatConfig}
+ * @returns {number | undefined}
  */
-const getSingleFlatConfig = (configName) => {
-    const configValue = pluginConfigs[configName];
+const getExpectedEslintMajor = (argv) => {
+    const expectedFlag = argv.find((argument) =>
+        argument.startsWith("--expect-eslint-major=")
+    );
 
-    if (Array.isArray(configValue) || configValue === undefined) {
+    if (expectedFlag === undefined) {
+        return undefined;
+    }
+
+    const rawMajor = expectedFlag.slice("--expect-eslint-major=".length);
+    const parsedMajor = Number.parseInt(rawMajor, 10);
+
+    if (!Number.isFinite(parsedMajor) || parsedMajor <= 0) {
         throw new TypeError(
-            `Expected plugin.configs.${configName} to be a single flat config object.`
+            `Invalid --expect-eslint-major value: ${rawMajor}. Expected a positive integer major version.`
         );
     }
 
-    return /** @type {FlatConfig} */ (configValue);
+    return parsedMajor;
+};
+
+/**
+ * @param {string} version
+ *
+ * @returns {number}
+ */
+const getEslintMajorVersion = (version) => {
+    const [majorText = "0"] = version.split(".");
+    const parsedMajor = Number.parseInt(majorText, 10);
+
+    if (!Number.isFinite(parsedMajor) || parsedMajor <= 0) {
+        throw new TypeError(
+            `Unable to determine ESLint major version from: ${version}`
+        );
+    }
+
+    return parsedMajor;
+};
+
+/**
+ * @param {string} configName
+ * @param {readonly string[]} [fallbackConfigNames]
+ *
+ * @returns {FlatConfig}
+ */
+const getSingleFlatConfig = (configName, fallbackConfigNames = []) => {
+    const candidateConfigNames = [configName, ...fallbackConfigNames];
+
+    for (const candidateName of candidateConfigNames) {
+        const configValue = pluginConfigs[candidateName];
+
+        if (configValue === undefined) {
+            continue;
+        }
+
+        if (Array.isArray(configValue)) {
+            throw new TypeError(
+                `Expected plugin.configs.${candidateName} to be a single flat config object.`
+            );
+        }
+
+        return /** @type {FlatConfig} */ (configValue);
+    }
+
+    throw new TypeError(
+        `Could not find plugin config ${configName} (checked fallbacks: ${fallbackConfigNames.join(", ") || "none"}).`
+    );
 };
 
 const run = async () => {
+    const expectedEslintMajor = getExpectedEslintMajor(process.argv.slice(2));
+    const installedEslintMajor = getEslintMajorVersion(ESLint.version);
+
+    if (
+        expectedEslintMajor !== undefined &&
+        installedEslintMajor !== expectedEslintMajor
+    ) {
+        throw new Error(
+            `Expected ESLint major ${expectedEslintMajor} but found ${ESLint.version}.`
+        );
+    }
+
     const cssEslint = new ESLint({
         cwd: process.cwd(),
         fix: true,
-        overrideConfig: getSingleFlatConfig("stylesheets"),
+        overrideConfig: getSingleFlatConfig("stylelintOnly", ["stylesheets"]),
         overrideConfigFile: true,
     });
     const [cssResult] = await cssEslint.lintText(`a { color: #ffffff; }`, {
@@ -50,7 +119,7 @@ const run = async () => {
     const configEslint = new ESLint({
         cwd: process.cwd(),
         fix: true,
-        overrideConfig: getSingleFlatConfig("configs"),
+        overrideConfig: getSingleFlatConfig("configuration", ["configs"]),
         overrideConfigFile: true,
     });
     const [configResult] = await configEslint.lintText(

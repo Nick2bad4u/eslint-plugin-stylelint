@@ -6,15 +6,17 @@ export default defineConfig({
         {
             cases: [
                 {
-                    testPath: "./cases/prefer-ts-extras-is-defined/baseline.ts",
+                    testPath:
+                        "./cases/prefer-stylelint-define-config/stylelint.config.ts",
                 },
                 {
-                    testPath: "./cases/prefer-ts-extras-is-defined/complex.ts",
+                    testPath:
+                        "./cases/prefer-stylelint-define-config/stylelint.config.mts",
                 },
             ],
-            name: "Rule: prefer-ts-extras-is-defined",
-            ruleId: "typefest/prefer-ts-extras-is-defined",
-            rulePath: "../src/rules/prefer-ts-extras-is-defined.ts",
+            name: "Rule: prefer-stylelint-define-config",
+            ruleId: "stylelint-2/prefer-stylelint-define-config",
+            rulePath: "../src/rules/prefer-stylelint-define-config.ts",
             warmup: {
                 iterations: 15,
             },

@@ -1,9 +1,9 @@
-# Contributing to eslint-plugin-typefest
+# Contributing to eslint-plugin-stylelint-2
 
 Thanks for your interest in contributing.
 
-This repository contains an ESLint plugin focused on `type-fest` and
-`ts-extras` usage patterns for TypeScript codebases.
+This repository contains an ESLint plugin focused on integrating Stylelint into
+ESLint and enforcing Stylelint configuration best practices.
 
 ## Prerequisites
 
@@ -127,9 +127,9 @@ Format:
 
 Examples:
 
-- `:sparkles: feat(rule): add prefer-type-fest-xyz`
+- `:sparkles: feat(rule): add prefer-stylelint-define-config`
 - `:bug: fix(rule): avoid false positive in union type handling`
-- `:memo: docs: clarify configuration for type-aware rules`
+- `:memo: docs: clarify stylelint bridge configuration`
 
 ## Pull request expectations
 
