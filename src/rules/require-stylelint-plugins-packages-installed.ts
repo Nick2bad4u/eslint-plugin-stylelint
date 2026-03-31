@@ -11,15 +11,33 @@ import { createStylelintConfigRequireInstalledPackageOptionRule } from "../_inte
  * workspace dependencies.
  */
 const requireStylelintPluginsPackagesInstalledRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "requireInstalledPackage",
+    readonly []
 > = createStylelintConfigRequireInstalledPackageOptionRule({
-    description:
-        "require top-level Stylelint `plugins` package specifiers to be listed in workspace dependencies.",
-    message:
-        "Add `{{packageName}}` to dependencies for this shared config, or remove the unresolved `plugins` reference.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "require top-level Stylelint `plugins` package specifiers to be listed in workspace dependencies.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/require-stylelint-plugins-packages-installed",
+        },
+        messages: {
+            requireInstalledPackage:
+                "Add `{{packageName}}` to dependencies for this shared config, or remove the unresolved `plugins` reference.",
+        },
+        schema: [],
+        type: "problem",
+    },
+    name: "require-stylelint-plugins-packages-installed",
     optionName: "plugins",
-    ruleName: "require-stylelint-plugins-packages-installed",
 });
 
 export default requireStylelintPluginsPackagesInstalledRule;

@@ -154,6 +154,7 @@ const stylelintRule: RuleModuleWithDocs<MessageIds, Options> = createTypedRule<
     defaultOptions,
     // eslint-disable-next-line eslint-plugin/require-meta-default-options -- createTypedRule preserves the rule-level defaultOptions contract for this plugin.
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "stylelint2.configs.recommended",

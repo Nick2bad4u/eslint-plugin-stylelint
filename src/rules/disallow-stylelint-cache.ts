@@ -8,15 +8,34 @@ import { createStylelintConfigDisallowedOptionRule } from "../_internal/stylelin
 
 /** Rule module that disallows `cache` in Stylelint config files. */
 const disallowStylelintCacheRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "disallowConfigOption",
+    readonly []
 > = createStylelintConfigDisallowedOptionRule({
-    description:
-        "disallow configuring Stylelint's top-level `cache` option inside authored Stylelint config files.",
-    message:
-        "Remove `cache` from the shared Stylelint config. Cache policy belongs to the execution environment and should be managed at the CLI or task-runner level.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "disallow configuring Stylelint's top-level `cache` option inside authored Stylelint config files.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-cache",
+        },
+        fixable: "code",
+        messages: {
+            disallowConfigOption:
+                "Remove `cache` from the shared Stylelint config. Cache policy belongs to the execution environment and should be managed at the CLI or task-runner level.",
+        },
+        schema: [],
+        type: "suggestion",
+    },
+    name: "disallow-stylelint-cache",
     optionName: "cache",
-    ruleName: "disallow-stylelint-cache",
 });
 
 export default disallowStylelintCacheRule;

@@ -20,6 +20,7 @@ export type RuleModuleWithDocs<
 > = TSESLint.RuleModule<MessageIds, Options> & {
     defaultOptions: Options;
     meta: TSESLint.RuleMetaData<MessageIds> & {
+        deprecated: boolean;
         docs: Stylelint2RuleDocs;
     };
     name: string;

@@ -112,6 +112,7 @@ const disallowStylelintNullRuleConfigRule: RuleModuleWithDocs<
     },
     defaultOptions: [],
     meta: {
+        deprecated: false,
         docs: {
             configs: [
                 "stylelint2.configs.recommended",

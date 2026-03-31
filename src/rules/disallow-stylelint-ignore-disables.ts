@@ -8,15 +8,34 @@ import { createStylelintConfigDisallowedOptionRule } from "../_internal/stylelin
 
 /** Rule module that disallows `ignoreDisables` in Stylelint config files. */
 const disallowStylelintIgnoreDisablesRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "disallowConfigOption",
+    readonly []
 > = createStylelintConfigDisallowedOptionRule({
-    description:
-        "disallow configuring Stylelint's top-level `ignoreDisables` option inside authored Stylelint config files.",
-    message:
-        "Remove `ignoreDisables` from the Stylelint config. It undermines disable-comment governance and conflicts with the report*Disables safety checks this plugin is designed to reinforce.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "disallow configuring Stylelint's top-level `ignoreDisables` option inside authored Stylelint config files.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-ignore-disables",
+        },
+        fixable: "code",
+        messages: {
+            disallowConfigOption:
+                "Remove `ignoreDisables` from the Stylelint config. It undermines disable-comment governance and conflicts with the report*Disables safety checks this plugin is designed to reinforce.",
+        },
+        schema: [],
+        type: "suggestion",
+    },
+    name: "disallow-stylelint-ignore-disables",
     optionName: "ignoreDisables",
-    ruleName: "disallow-stylelint-ignore-disables",
 });
 
 export default disallowStylelintIgnoreDisablesRule;

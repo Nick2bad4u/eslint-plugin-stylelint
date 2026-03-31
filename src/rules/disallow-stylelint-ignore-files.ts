@@ -8,15 +8,34 @@ import { createStylelintConfigDisallowedOptionRule } from "../_internal/stylelin
 
 /** Rule module that disallows `ignoreFiles` in Stylelint config files. */
 const disallowStylelintIgnoreFilesRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "disallowConfigOption",
+    readonly []
 > = createStylelintConfigDisallowedOptionRule({
-    description:
-        "disallow configuring Stylelint's top-level `ignoreFiles` option inside authored Stylelint config files.",
-    message:
-        "Remove `ignoreFiles` from the shared Stylelint config. Ignore coverage should be defined in .stylelintignore or invocation-level file globs so repositories keep predictable lint scope.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "disallow configuring Stylelint's top-level `ignoreFiles` option inside authored Stylelint config files.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-ignore-files",
+        },
+        fixable: "code",
+        messages: {
+            disallowConfigOption:
+                "Remove `ignoreFiles` from the shared Stylelint config. Ignore coverage should be defined in .stylelintignore or invocation-level file globs so repositories keep predictable lint scope.",
+        },
+        schema: [],
+        type: "suggestion",
+    },
+    name: "disallow-stylelint-ignore-files",
     optionName: "ignoreFiles",
-    ruleName: "disallow-stylelint-ignore-files",
 });
 
 export default disallowStylelintIgnoreFilesRule;

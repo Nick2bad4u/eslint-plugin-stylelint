@@ -19,12 +19,11 @@ import {
     toRuleListener,
 } from "./typed-rule.js";
 
-type ConfigOptionRuleDefinition = Readonly<{
-    description: string;
-    message: string;
-    optionName: string;
-    ruleName: string;
-}>;
+type ConfigOptionRuleDefinition<MessageIds extends string> = Readonly<
+    Omit<RuleModuleWithDocs<MessageIds, Options>, "create"> & {
+        optionName: string;
+    }
+>;
 
 type Options = readonly [];
 
@@ -137,11 +136,12 @@ const getRelativeLiterals = (
  * string-array option.
  */
 export const createStylelintConfigPreferArrayOptionRule = (
-    definition: Readonly<ConfigOptionRuleDefinition>
+    definition: Readonly<ConfigOptionRuleDefinition<"preferArray">>
 ): RuleModuleWithDocs<"preferArray", Options> => {
-    const { description, message, optionName, ruleName } = definition;
+    const { optionName, ...ruleDefinition } = definition;
 
     return createTypedRule({
+        ...ruleDefinition,
         create(context) {
             if (!isStylelintConfigFile(context.physicalFilename)) {
                 return {};
@@ -194,27 +194,6 @@ export const createStylelintConfigPreferArrayOptionRule = (
                 },
             });
         },
-        defaultOptions: [],
-        meta: {
-            docs: {
-                configs: [
-                    "stylelint2.configs.recommended",
-                    "stylelint2.configs.configuration",
-                    "stylelint2.configs.all",
-                ],
-                description,
-                recommended: true,
-                requiresTypeChecking: false,
-                url: `https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/${ruleName}`,
-            },
-            fixable: "code",
-            messages: {
-                preferArray: message,
-            },
-            schema: [],
-            type: "suggestion",
-        },
-        name: ruleName,
     }) satisfies RuleModuleWithDocs<"preferArray", Options>;
 };
 
@@ -223,11 +202,12 @@ export const createStylelintConfigPreferArrayOptionRule = (
  * string-array option.
  */
 export const createStylelintConfigDisallowDuplicateArrayEntriesRule = (
-    definition: Readonly<ConfigOptionRuleDefinition>
+    definition: Readonly<ConfigOptionRuleDefinition<"disallowDuplicates">>
 ): RuleModuleWithDocs<"disallowDuplicates", Options> => {
-    const { description, message, optionName, ruleName } = definition;
+    const { optionName, ...ruleDefinition } = definition;
 
     return createTypedRule({
+        ...ruleDefinition,
         create(context) {
             if (!isStylelintConfigFile(context.physicalFilename)) {
                 return {};
@@ -291,27 +271,6 @@ export const createStylelintConfigDisallowDuplicateArrayEntriesRule = (
                 },
             });
         },
-        defaultOptions: [],
-        meta: {
-            docs: {
-                configs: [
-                    "stylelint2.configs.recommended",
-                    "stylelint2.configs.configuration",
-                    "stylelint2.configs.all",
-                ],
-                description,
-                recommended: true,
-                requiresTypeChecking: false,
-                url: `https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/${ruleName}`,
-            },
-            fixable: "code",
-            messages: {
-                disallowDuplicates: message,
-            },
-            schema: [],
-            type: "suggestion",
-        },
-        name: ruleName,
     }) satisfies RuleModuleWithDocs<"disallowDuplicates", Options>;
 };
 
@@ -320,11 +279,12 @@ export const createStylelintConfigDisallowDuplicateArrayEntriesRule = (
  * string-array option.
  */
 export const createStylelintConfigSortArrayEntriesRule = (
-    definition: Readonly<ConfigOptionRuleDefinition>
+    definition: Readonly<ConfigOptionRuleDefinition<"sortArray">>
 ): RuleModuleWithDocs<"sortArray", Options> => {
-    const { description, message, optionName, ruleName } = definition;
+    const { optionName, ...ruleDefinition } = definition;
 
     return createTypedRule({
+        ...ruleDefinition,
         create(context) {
             if (!isStylelintConfigFile(context.physicalFilename)) {
                 return {};
@@ -388,27 +348,6 @@ export const createStylelintConfigSortArrayEntriesRule = (
                 },
             });
         },
-        defaultOptions: [],
-        meta: {
-            docs: {
-                configs: [
-                    "stylelint2.configs.recommended",
-                    "stylelint2.configs.configuration",
-                    "stylelint2.configs.all",
-                ],
-                description,
-                recommended: true,
-                requiresTypeChecking: false,
-                url: `https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/${ruleName}`,
-            },
-            fixable: "code",
-            messages: {
-                sortArray: message,
-            },
-            schema: [],
-            type: "suggestion",
-        },
-        name: ruleName,
     }) satisfies RuleModuleWithDocs<"sortArray", Options>;
 };
 
@@ -417,11 +356,12 @@ export const createStylelintConfigSortArrayEntriesRule = (
  * string-array option.
  */
 export const createStylelintConfigDisallowRelativeArrayEntriesRule = (
-    definition: Readonly<ConfigOptionRuleDefinition>
+    definition: Readonly<ConfigOptionRuleDefinition<"disallowRelative">>
 ): RuleModuleWithDocs<"disallowRelative", Options> => {
-    const { description, message, optionName, ruleName } = definition;
+    const { optionName, ...ruleDefinition } = definition;
 
     return createTypedRule({
+        ...ruleDefinition,
         create(context) {
             if (!isStylelintConfigFile(context.physicalFilename)) {
                 return {};
@@ -465,25 +405,5 @@ export const createStylelintConfigDisallowRelativeArrayEntriesRule = (
                 },
             });
         },
-        defaultOptions: [],
-        meta: {
-            docs: {
-                configs: [
-                    "stylelint2.configs.recommended",
-                    "stylelint2.configs.configuration",
-                    "stylelint2.configs.all",
-                ],
-                description,
-                recommended: true,
-                requiresTypeChecking: false,
-                url: `https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/${ruleName}`,
-            },
-            messages: {
-                disallowRelative: message,
-            },
-            schema: [],
-            type: "suggestion",
-        },
-        name: ruleName,
     }) satisfies RuleModuleWithDocs<"disallowRelative", Options>;
 };

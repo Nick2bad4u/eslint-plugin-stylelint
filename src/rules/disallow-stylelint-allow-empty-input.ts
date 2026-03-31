@@ -8,15 +8,34 @@ import { createStylelintConfigDisallowedOptionRule } from "../_internal/stylelin
 
 /** Rule module that disallows `allowEmptyInput` in Stylelint config files. */
 const disallowStylelintAllowEmptyInputRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "disallowConfigOption",
+    readonly []
 > = createStylelintConfigDisallowedOptionRule({
-    description:
-        "disallow configuring Stylelint's top-level `allowEmptyInput` option inside authored Stylelint config files.",
-    message:
-        "Remove `allowEmptyInput` from the shared Stylelint config. Empty-input handling should be managed by invocation-level file targeting and task orchestration, not hidden in shared config state.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "disallow configuring Stylelint's top-level `allowEmptyInput` option inside authored Stylelint config files.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-allow-empty-input",
+        },
+        fixable: "code",
+        messages: {
+            disallowConfigOption:
+                "Remove `allowEmptyInput` from the shared Stylelint config. Empty-input handling should be managed by invocation-level file targeting and task orchestration, not hidden in shared config state.",
+        },
+        schema: [],
+        type: "suggestion",
+    },
+    name: "disallow-stylelint-allow-empty-input",
     optionName: "allowEmptyInput",
-    ruleName: "disallow-stylelint-allow-empty-input",
 });
 
 export default disallowStylelintAllowEmptyInputRule;

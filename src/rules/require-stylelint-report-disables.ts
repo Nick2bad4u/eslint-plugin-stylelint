@@ -8,15 +8,34 @@ import { createStylelintConfigBooleanOptionRule } from "../_internal/stylelint-c
 
 /** Rule module that requires `reportDisables: true` in Stylelint config files. */
 const requireStylelintReportDisablesRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "requireConfigOption",
+    readonly []
 > = createStylelintConfigBooleanOptionRule({
-    description:
-        "require `reportDisables: true` in authored Stylelint config files.",
-    message:
-        "Enable `reportDisables: true` so disable-comment usage remains visible and reviewable.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "require `reportDisables: true` in authored Stylelint config files.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/require-stylelint-report-disables",
+        },
+        fixable: "code",
+        messages: {
+            requireConfigOption:
+                "Enable `reportDisables: true` so disable-comment usage remains visible and reviewable.",
+        },
+        schema: [],
+        type: "suggestion",
+    },
+    name: "require-stylelint-report-disables",
     optionName: "reportDisables",
-    ruleName: "require-stylelint-report-disables",
 });
 
 export default requireStylelintReportDisablesRule;

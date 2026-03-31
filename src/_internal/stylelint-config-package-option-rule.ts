@@ -23,12 +23,12 @@ import {
     toRuleListener,
 } from "./typed-rule.js";
 
-type ConfigOptionRuleDefinition = Readonly<{
-    description: string;
-    message: string;
-    optionName: "extends" | "plugins";
-    ruleName: string;
-}>;
+type ConfigOptionRuleDefinition = Readonly<
+    Omit<RuleModuleWithDocs<"requireInstalledPackage", Options>, "create"> & {
+        optionName: "extends" | "plugins";
+    }
+>;
+
 type Options = readonly [];
 
 /**
@@ -38,9 +38,10 @@ type Options = readonly [];
 export const createStylelintConfigRequireInstalledPackageOptionRule = (
     definition: Readonly<ConfigOptionRuleDefinition>
 ): RuleModuleWithDocs<"requireInstalledPackage", Options> => {
-    const { description, message, optionName, ruleName } = definition;
+    const { optionName, ...ruleDefinition } = definition;
 
     return createTypedRule({
+        ...ruleDefinition,
         create(context) {
             if (!isStylelintConfigFile(context.physicalFilename)) {
                 return {};
@@ -123,25 +124,5 @@ export const createStylelintConfigRequireInstalledPackageOptionRule = (
                 },
             });
         },
-        defaultOptions: [],
-        meta: {
-            docs: {
-                configs: [
-                    "stylelint2.configs.recommended",
-                    "stylelint2.configs.configuration",
-                    "stylelint2.configs.all",
-                ],
-                description,
-                recommended: true,
-                requiresTypeChecking: false,
-                url: `https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/${ruleName}`,
-            },
-            messages: {
-                requireInstalledPackage: message,
-            },
-            schema: [],
-            type: "problem",
-        },
-        name: ruleName,
     }) satisfies RuleModuleWithDocs<"requireInstalledPackage", Options>;
 };

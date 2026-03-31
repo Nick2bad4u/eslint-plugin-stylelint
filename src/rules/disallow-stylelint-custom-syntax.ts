@@ -11,15 +11,34 @@ import { createStylelintConfigDisallowedOptionRule } from "../_internal/stylelin
  * files.
  */
 const disallowStylelintCustomSyntaxRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "disallowConfigOption",
+    readonly []
 > = createStylelintConfigDisallowedOptionRule({
-    description:
-        "disallow configuring Stylelint's top-level `customSyntax` option inside authored Stylelint config files.",
-    message:
-        "Remove top-level `customSyntax` from the shared Stylelint config. Syntax selection should be scoped in `overrides` entries with explicit file globs.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "disallow configuring Stylelint's top-level `customSyntax` option inside authored Stylelint config files.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-custom-syntax",
+        },
+        fixable: "code",
+        messages: {
+            disallowConfigOption:
+                "Remove top-level `customSyntax` from the shared Stylelint config. Syntax selection should be scoped in `overrides` entries with explicit file globs.",
+        },
+        schema: [],
+        type: "suggestion",
+    },
+    name: "disallow-stylelint-custom-syntax",
     optionName: "customSyntax",
-    ruleName: "disallow-stylelint-custom-syntax",
 });
 
 export default disallowStylelintCustomSyntaxRule;

@@ -16,14 +16,13 @@ import {
     toRuleListener,
 } from "./typed-rule.js";
 
-type ConfigOptionRuleDefinition = Readonly<{
-    description: string;
-    message: string;
-    optionName: string;
-    ruleName: string;
-}>;
-
+type ConfigOptionRuleDefinition = Readonly<
+    Omit<RuleModuleWithDocs<MessageIds, Options>, "create"> & {
+        optionName: string;
+    }
+>;
 type MessageIds = "disallowConfigOption";
+
 type Options = readonly [];
 
 /**
@@ -36,9 +35,10 @@ type Options = readonly [];
 export const createStylelintConfigDisallowedOptionRule = (
     definition: Readonly<ConfigOptionRuleDefinition>
 ): RuleModuleWithDocs<MessageIds, Options> => {
-    const { description, message, optionName, ruleName } = definition;
+    const { optionName, ...ruleDefinition } = definition;
 
     return createTypedRule({
+        ...ruleDefinition,
         create(context) {
             if (!isStylelintConfigFile(context.physicalFilename)) {
                 return {};
@@ -83,26 +83,5 @@ export const createStylelintConfigDisallowedOptionRule = (
                 },
             });
         },
-        defaultOptions: [],
-        meta: {
-            docs: {
-                configs: [
-                    "stylelint2.configs.recommended",
-                    "stylelint2.configs.configuration",
-                    "stylelint2.configs.all",
-                ],
-                description,
-                recommended: true,
-                requiresTypeChecking: false,
-                url: `https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/${ruleName}`,
-            },
-            fixable: "code",
-            messages: {
-                disallowConfigOption: message,
-            },
-            schema: [],
-            type: "suggestion",
-        },
-        name: ruleName,
     }) satisfies RuleModuleWithDocs<MessageIds, Options>;
 };

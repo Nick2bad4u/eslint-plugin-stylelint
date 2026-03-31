@@ -8,15 +8,34 @@ import { createStylelintConfigBooleanOptionRule } from "../_internal/stylelint-c
 
 /** Rule module that requires `reportNeedlessDisables` in Stylelint config files. */
 const preferStylelintReportNeedlessDisablesRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "requireConfigOption",
+    readonly []
 > = createStylelintConfigBooleanOptionRule({
-    description:
-        "require enabling Stylelint's `reportNeedlessDisables` config option in authored Stylelint config files.",
-    message:
-        "Enable `reportNeedlessDisables` so Stylelint reports disable comments that do not suppress any active finding.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "require enabling Stylelint's `reportNeedlessDisables` config option in authored Stylelint config files.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-needless-disables",
+        },
+        fixable: "code",
+        messages: {
+            requireConfigOption:
+                "Enable `reportNeedlessDisables` so Stylelint reports disable comments that do not suppress any active finding.",
+        },
+        schema: [],
+        type: "suggestion",
+    },
+    name: "prefer-stylelint-report-needless-disables",
     optionName: "reportNeedlessDisables",
-    ruleName: "prefer-stylelint-report-needless-disables",
 });
 
 export default preferStylelintReportNeedlessDisablesRule;

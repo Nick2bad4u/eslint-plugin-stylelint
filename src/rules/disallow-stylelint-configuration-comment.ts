@@ -8,15 +8,34 @@ import { createStylelintConfigDisallowedOptionRule } from "../_internal/stylelin
 
 /** Rule module that disallows `configurationComment` in Stylelint config files. */
 const disallowStylelintConfigurationCommentRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "disallowConfigOption",
+    readonly []
 > = createStylelintConfigDisallowedOptionRule({
-    description:
-        "disallow configuring Stylelint's top-level `configurationComment` option inside authored Stylelint config files.",
-    message:
-        "Remove `configurationComment` from the shared Stylelint config. Configuration comment policy should remain consistent across repositories and not drift through local override markers.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "disallow configuring Stylelint's top-level `configurationComment` option inside authored Stylelint config files.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/disallow-stylelint-configuration-comment",
+        },
+        fixable: "code",
+        messages: {
+            disallowConfigOption:
+                "Remove `configurationComment` from the shared Stylelint config. Configuration comment policy should remain consistent across repositories and not drift through local override markers.",
+        },
+        schema: [],
+        type: "suggestion",
+    },
+    name: "disallow-stylelint-configuration-comment",
     optionName: "configurationComment",
-    ruleName: "disallow-stylelint-configuration-comment",
 });
 
 export default disallowStylelintConfigurationCommentRule;

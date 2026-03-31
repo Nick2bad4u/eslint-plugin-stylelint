@@ -178,6 +178,7 @@ const sortStylelintRuleKeysRule: RuleModuleWithDocs<MessageIds, Options> =
         },
         defaultOptions: [],
         meta: {
+            deprecated: false,
             docs: {
                 configs: [
                     "stylelint2.configs.recommended",

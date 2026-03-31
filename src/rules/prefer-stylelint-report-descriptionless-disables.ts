@@ -11,15 +11,34 @@ import { createStylelintConfigBooleanOptionRule } from "../_internal/stylelint-c
  * files.
  */
 const preferStylelintReportDescriptionlessDisablesRule: RuleModuleWithDocs<
-    string,
-    readonly unknown[]
+    "requireConfigOption",
+    readonly []
 > = createStylelintConfigBooleanOptionRule({
-    description:
-        "require enabling Stylelint's `reportDescriptionlessDisables` config option in authored Stylelint config files.",
-    message:
-        "Enable `reportDescriptionlessDisables` so Stylelint reports disable comments that do not explain why the rule was turned off.",
+    defaultOptions: [],
+    meta: {
+        deprecated: false,
+        docs: {
+            configs: [
+                "stylelint2.configs.recommended",
+                "stylelint2.configs.configuration",
+                "stylelint2.configs.all",
+            ],
+            description:
+                "require enabling Stylelint's `reportDescriptionlessDisables` config option in authored Stylelint config files.",
+            recommended: true,
+            requiresTypeChecking: false,
+            url: "https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/prefer-stylelint-report-descriptionless-disables",
+        },
+        fixable: "code",
+        messages: {
+            requireConfigOption:
+                "Enable `reportDescriptionlessDisables` so Stylelint reports disable comments that do not explain why the rule was turned off.",
+        },
+        schema: [],
+        type: "suggestion",
+    },
+    name: "prefer-stylelint-report-descriptionless-disables",
     optionName: "reportDescriptionlessDisables",
-    ruleName: "prefer-stylelint-report-descriptionless-disables",
 });
 
 export default preferStylelintReportDescriptionlessDisablesRule;
