@@ -169,50 +169,6 @@ This package is strongest when you want repo-level consistency around both style
 
 If your team prefers running Stylelint separately, this package may be unnecessary.
 
-## Documentation
-
-- [Overview](./docs/rules/overview.md)
-- [Getting started](./docs/rules/getting-started.md)
-- [Presets](./docs/rules/presets/index.md)
-- [stylelint rule docs](./docs/rules/stylelint.md)
-- [disallow-stylelint-allow-empty-input](./docs/rules/disallow-stylelint-allow-empty-input.md)
-- [disallow-stylelint-configuration-comment](./docs/rules/disallow-stylelint-configuration-comment.md)
-- [disallow-stylelint-custom-syntax](./docs/rules/disallow-stylelint-custom-syntax.md)
-- [disallow-stylelint-default-severity](./docs/rules/disallow-stylelint-default-severity.md)
-- [disallow-stylelint-duplicate-extends](./docs/rules/disallow-stylelint-duplicate-extends.md)
-- [disallow-stylelint-duplicate-plugins](./docs/rules/disallow-stylelint-duplicate-plugins.md)
-- [disallow-stylelint-duplicate-rule-option-values](./docs/rules/disallow-stylelint-duplicate-rule-option-values.md)
-- [disallow-stylelint-empty-rules-object](./docs/rules/disallow-stylelint-empty-rules-object.md)
-- [disallow-stylelint-ignore-disables](./docs/rules/disallow-stylelint-ignore-disables.md)
-- [disallow-stylelint-ignore-files](./docs/rules/disallow-stylelint-ignore-files.md)
-- [disallow-stylelint-null-rule-config](./docs/rules/disallow-stylelint-null-rule-config.md)
-- [disallow-stylelint-overrides-runtime-options](./docs/rules/disallow-stylelint-overrides-runtime-options.md)
-- [disallow-stylelint-processors](./docs/rules/disallow-stylelint-processors.md)
-- [disallow-stylelint-relative-extends-paths](./docs/rules/disallow-stylelint-relative-extends-paths.md)
-- [disallow-stylelint-relative-plugin-paths](./docs/rules/disallow-stylelint-relative-plugin-paths.md)
-- [prefer-stylelint-cache](./docs/rules/prefer-stylelint-cache.md)
-- [prefer-stylelint-define-config](./docs/rules/prefer-stylelint-define-config.md)
-- [prefer-stylelint-extends-array](./docs/rules/prefer-stylelint-extends-array.md)
-- [prefer-stylelint-fix](./docs/rules/prefer-stylelint-fix.md)
-- [prefer-stylelint-formatter](./docs/rules/prefer-stylelint-formatter.md)
-- [prefer-stylelint-plugins-array](./docs/rules/prefer-stylelint-plugins-array.md)
-- [prefer-stylelint-report-descriptionless-disables](./docs/rules/prefer-stylelint-report-descriptionless-disables.md)
-- [prefer-stylelint-report-invalid-scope-disables](./docs/rules/prefer-stylelint-report-invalid-scope-disables.md)
-- [prefer-stylelint-report-needless-disables](./docs/rules/prefer-stylelint-report-needless-disables.md)
-- [prefer-stylelint-report-unscoped-disables](./docs/rules/prefer-stylelint-report-unscoped-disables.md)
-- [require-stylelint-config-file-naming-convention](./docs/rules/require-stylelint-config-file-naming-convention.md)
-- [require-stylelint-custom-syntax-in-overrides](./docs/rules/require-stylelint-custom-syntax-in-overrides.md)
-- [require-stylelint-extends-packages-installed](./docs/rules/require-stylelint-extends-packages-installed.md)
-- [require-stylelint-overrides-configuration](./docs/rules/require-stylelint-overrides-configuration.md)
-- [require-stylelint-overrides-files-array](./docs/rules/require-stylelint-overrides-files-array.md)
-- [require-stylelint-overrides-files](./docs/rules/require-stylelint-overrides-files.md)
-- [require-stylelint-plugins-packages-installed](./docs/rules/require-stylelint-plugins-packages-installed.md)
-- [require-stylelint-report-disables](./docs/rules/require-stylelint-report-disables.md)
-- [require-stylelint-rules-object](./docs/rules/require-stylelint-rules-object.md)
-- [sort-stylelint-extends](./docs/rules/sort-stylelint-extends.md)
-- [sort-stylelint-plugins](./docs/rules/sort-stylelint-plugins.md)
-- [sort-stylelint-rule-keys](./docs/rules/sort-stylelint-rule-keys.md)
-
 ## Contributors ✨
 
 See [CONTRIBUTORS.md](./CONTRIBUTORS.md).
