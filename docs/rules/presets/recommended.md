@@ -19,6 +19,16 @@ export default [
 ];
 ```
 
+## What this preset includes
+
+- The Stylelint bridge rule (`stylelint`)
+- High-signal configuration policy rules for common production usage
+
+## What this preset does not include
+
+- The full strict policy surface from [`all`](./all.md)
+- Configuration-only mode semantics from [`configuration`](./configuration.md)
+
 ## Related preset docs
 
 - [Presets overview](./index.md)
@@ -26,7 +36,7 @@ export default [
 - [Configuration-only preset](./configuration.md)
 - [All preset](./all.md)
 
-## Notable rules in this preset
+## Rules in this preset
 
 For the exhaustive generated rule matrix, see [Presets overview](./index.md).
 

@@ -18,15 +18,12 @@ export default [
 
 ## What this preset includes
 
-- `stylelint-2/stylelint`
-- stylesheet files only (`**/*.css`)
-- Stylelint edit info surfaced through `eslint --fix` when available
+- The bridge rule only: [`stylelint`](https://nick2bad4u.github.io/eslint-plugin-stylelint-2/docs/rules/stylelint)
 
 ## What this preset does not include
 
-- No Stylelint config-module rules
-- No `defineConfig()` authoring checks
-- No disable-comment reporting checks for config files
+- Configuration-authoring policy rules (`require-*`, `disallow-*`, `sort-*`)
+- Operational policy rules like `prefer-stylelint-cache` and reporting preferences
 
 ## Related preset docs
 

@@ -83,58 +83,49 @@ const sidebars: SidebarsConfig = {
     rules: [
         {
             className: "sb-cat-guides",
-            collapsed: true,
+            collapsed: false,
             collapsible: true,
             type: "category",
             label: "🧭 Guides",
             items: [
                 {
-                    href: "/docs/intro",
+                    id: "guides/intro",
                     label: "🏁 Overview",
-                    type: "link",
+                    type: "doc",
                 },
                 {
-                    href: "/docs/getting-started",
+                    id: "guides/getting-started",
                     label: "🚀 Getting Started",
-                    type: "link",
+                    type: "doc",
                 },
                 {
-                    href: "/docs/stylelint-bridge",
-                    label: "🎨 Stylelint bridge",
-                    type: "link",
+                    id: "guides/stylelint-bridge",
+                    label: "🎨 Stylelint Bridge",
+                    type: "doc",
                 },
                 {
-                    href: "/docs/config-authoring",
-                    label: "🛠️ Config authoring",
-                    type: "link",
+                    id: "guides/config-authoring",
+                    label: "🛠️ Config Authoring",
+                    type: "doc",
                 },
                 {
-                    href: "/docs/faq",
+                    id: "guides/faq",
                     label: "❓ FAQ",
-                    type: "link",
+                    type: "doc",
                 },
             ],
         },
         {
-            className: "sb-doc-overview",
-            id: "overview",
-            label: "🏁 Rules Overview",
-            type: "doc",
-        },
-        {
-            className: "sb-doc-getting-started",
-            id: "getting-started",
-            label: "🚀 Rules Getting Started",
-            type: "doc",
-        },
-        {
             className: "sb-cat-presets",
             collapsed: false,
+            collapsible: true,
+            description:
+                "Pre-configured sets of rules for common use cases and configurations.",
             customProps: {
                 badge: "presets",
             },
             type: "category",
-            label: "Presets",
+            label: "🎛️ Presets",
             link: {
                 type: "doc",
                 id: "presets/index",
@@ -169,6 +160,9 @@ const sidebars: SidebarsConfig = {
         {
             className: "sb-cat-rules",
             collapsed: false,
+            collapsible: true,
+            description:
+                "The full set of rules provided by eslint-plugin-stylelint-2, including core rules for bridging Stylelint into ESLint and standardizing Stylelint config authoring, as well as rules for individual Stylelint rules.",
             customProps: {
                 badge: "rules",
             },
@@ -181,25 +175,7 @@ const sidebars: SidebarsConfig = {
                 description:
                     "Rule documentation for every eslint-plugin-stylelint-2 rule.",
             },
-            items: [
-                {
-                    className: "sb-cat-rules-stylelint",
-                    collapsed: false,
-                    collapsible: true,
-                    customProps: {
-                        badge: "stylelint",
-                    },
-                    type: "category",
-                    label: "stylelint",
-                    link: {
-                        type: "generated-index",
-                        title: "stylelint Rules",
-                        description:
-                            "Rules for bridging Stylelint into ESLint and standardizing Stylelint config authoring.",
-                    },
-                    items: stylelintRuleItems,
-                },
-            ],
+            items: stylelintRuleItems,
         },
     ],
 };

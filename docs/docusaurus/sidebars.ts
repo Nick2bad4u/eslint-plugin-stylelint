@@ -1,428 +1,130 @@
-import { existsSync, readdirSync } from "node:fs";
-import { createRequire } from "node:module";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+/**
+ * @packageDocumentation
+ * Sidebars for the classic docs plugin (developer docs only).
+ */
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
 
 import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
-type SidebarDocItem = {
-    className?: string;
-    id: string;
-    label: string;
-    type: "doc";
-};
+const docsRootPath = join(process.cwd(), "docs", "docusaurus", "site-docs");
+const typedocRootPath = join(docsRootPath, "developer", "api");
 
-type SidebarLinkItem = {
-    className?: string;
-    href: string;
-    label: string;
-    type: "link";
-};
+const isMarkdownFileName = (fileName: string): boolean =>
+    /\.mdx?$/u.test(fileName);
 
-type SidebarGeneratedIndexLink = {
-    description?: string;
-    title?: string;
-    type: "generated-index";
-};
+const toDocId = (fileName: string): string =>
+    `developer/api/${fileName.replace(/\.mdx?$/u, "")}`;
 
-type SidebarDocCategoryLink = {
-    id: string;
-    type: "doc";
-};
-
-type SidebarCategoryItem = {
-    className?: string;
-    collapsed?: boolean;
-    collapsible?: boolean;
-    customProps?: Record<string, string>;
-    items: SidebarItem[];
-    label: string;
-    link?: SidebarDocCategoryLink | SidebarGeneratedIndexLink;
-    type: "category";
-};
-
-type SidebarItem = SidebarCategoryItem | SidebarDocItem | SidebarLinkItem;
-
-const requireFromSidebar = createRequire(import.meta.url);
-const sidebarDirectoryPath = dirname(fileURLToPath(import.meta.url));
-const typedocSidebarPath = resolve(
-    sidebarDirectoryPath,
-    "site-docs",
-    "developer",
-    "api",
-    "typedoc-sidebar.cjs"
-);
-const typedocIndexPath = resolve(
-    sidebarDirectoryPath,
-    "site-docs",
-    "developer",
-    "api",
-    "index.md"
-);
-const rulesDirectoryPath = join(sidebarDirectoryPath, "..", "rules");
-const nonRuleDocIds = new Set(["getting-started", "overview"]);
-const pinnedRuleDocIds = ["stylelint"];
-const pinnedRuleDocIdSet = new Set(pinnedRuleDocIds);
-
-const isSidebarCategoryItem = (
-    item: SidebarItem
-): item is SidebarCategoryItem => item.type === "category";
-
-const isSidebarDocItem = (item: SidebarItem): item is SidebarDocItem =>
-    item.type === "doc";
-
-const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
-    typeof value === "object" && value !== null;
-
-const isSidebarGeneratedIndexLink = (
-    value: unknown
-): value is SidebarGeneratedIndexLink => {
-    if (!isObjectRecord(value) || value["type"] !== "generated-index") {
-        return false;
+const toLabel = (docId: string): string => {
+    if (docId.endsWith("/index")) {
+        return "📘 API Overview";
     }
 
-    return (
-        value["description"] === undefined ||
-        typeof value["description"] === "string"
-    );
-};
-
-const isSidebarDocCategoryLink = (
-    value: unknown
-): value is SidebarDocCategoryLink =>
-    isObjectRecord(value) &&
-    value["type"] === "doc" &&
-    typeof value["id"] === "string";
-
-const isSidebarLinkItem = (value: unknown): value is SidebarLinkItem =>
-    isObjectRecord(value) &&
-    value["type"] === "link" &&
-    typeof value["href"] === "string" &&
-    typeof value["label"] === "string" &&
-    (value["className"] === undefined ||
-        typeof value["className"] === "string");
-
-const isSidebarDocEntryItem = (value: unknown): value is SidebarDocItem =>
-    isObjectRecord(value) &&
-    value["type"] === "doc" &&
-    typeof value["id"] === "string" &&
-    typeof value["label"] === "string" &&
-    (value["className"] === undefined ||
-        typeof value["className"] === "string");
-
-const isSidebarItem = (value: unknown): value is SidebarItem => {
-    if (isSidebarLinkItem(value) || isSidebarDocEntryItem(value)) {
-        return true;
-    }
-
-    if (!isObjectRecord(value) || value["type"] !== "category") {
-        return false;
-    }
-
-    if (
-        typeof value["label"] !== "string" ||
-        !Array.isArray(value["items"]) ||
-        !value["items"].every(isSidebarItem)
-    ) {
-        return false;
-    }
-
-    if (
-        value["className"] !== undefined &&
-        typeof value["className"] !== "string"
-    ) {
-        return false;
-    }
-
-    if (
-        value["collapsed"] !== undefined &&
-        typeof value["collapsed"] !== "boolean"
-    ) {
-        return false;
-    }
-
-    if (
-        value["collapsible"] !== undefined &&
-        typeof value["collapsible"] !== "boolean"
-    ) {
-        return false;
-    }
-
-    if (
-        value["customProps"] !== undefined &&
-        !isObjectRecord(value["customProps"])
-    ) {
-        return false;
-    }
-
-    if (value["link"] === undefined) {
-        return true;
-    }
-
-    return (
-        isSidebarDocCategoryLink(value["link"]) ||
-        isSidebarGeneratedIndexLink(value["link"])
-    );
-};
-
-const getTypedocClassName = (
-    label: string,
-    depth: number
-): string | undefined => {
-    if (depth === 0 && label === "plugin") {
-        return "sb-cat-api-public";
-    }
-
-    if (depth === 0 && label === "_internal") {
-        return "sb-cat-api-internal";
-    }
-
-    if (label === "Functions") {
-        return "sb-cat-api-functions";
-    }
-
-    if (label === "Type Aliases") {
-        return "sb-cat-api-types";
-    }
-
-    if (label === "Variables") {
-        return "sb-cat-api-variables";
-    }
-
-    return undefined;
-};
-
-const normalizeTypedocDocId = (documentId: string): string =>
-    documentId
-        .replace(/^\.\.\/site-docs\//u, "")
+    const raw = docId
+        .replace(/^developer\/api\//u, "")
+        .replace(/^modules\//u, "")
         .replace(
-            /stylelintconfig-references/gu,
-            "stylelint2-config-references"
-        );
+            /\.(?:interface|type|class|enum|function|namespace|module)$/u,
+            ""
+        )
+        .replaceAll("-", " ")
+        .trim();
 
-const decorateTypedocSidebarItems = (
-    items: SidebarItem[],
-    depth = 0
-): SidebarItem[] =>
-    items.map((item) => {
-        if (!isSidebarCategoryItem(item)) {
-            if (!isSidebarDocItem(item)) {
-                return item;
-            }
+    const titleCase = raw.replace(
+        /(^|\s)([a-zA-Z])/gu,
+        (_match, prefix: string, character: string) =>
+            `${prefix}${character.toUpperCase()}`
+    );
 
-            return {
-                ...item,
-                id: normalizeTypedocDocId(item.id),
-            };
+    return titleCase.length > 0 ? titleCase : docId;
+};
+
+const typedocDocIds = readdirSync(typedocRootPath, { withFileTypes: true })
+    .filter(
+        (entry) =>
+            entry.isFile() &&
+            isMarkdownFileName(entry.name) &&
+            entry.name !== "index.md"
+    )
+    .map((entry) => toDocId(entry.name))
+    .sort((left, right) => left.localeCompare(right));
+
+const sectionPrefixes = [
+    "interfaces/",
+    "classes/",
+    "types/",
+    "functions/",
+    "variables/",
+    "type-aliases/",
+] as const;
+
+const sectionCategories = sectionPrefixes
+    .map((prefix) => {
+        const sectionItems = typedocDocIds
+            .filter((docId) => docId.includes(`/modules/${prefix}`))
+            .map((docId) => ({
+                id: docId,
+                label: toLabel(docId),
+                type: "doc" as const,
+            }));
+
+        if (sectionItems.length === 0) {
+            return undefined;
         }
 
-        const typedocClassName = getTypedocClassName(item.label, depth);
+        const sectionLabel = prefix
+            .replaceAll("/", "")
+            .replaceAll("-", " ")
+            .replace(
+                /(^|\s)([a-zA-Z])/gu,
+                (_m, p: string, c: string) => `${p}${c.toUpperCase()}`
+            );
 
         return {
-            ...item,
-            ...(typedocClassName === undefined
-                ? {}
-                : { className: typedocClassName }),
-            ...(item.link?.type === "doc"
-                ? {
-                      link: {
-                          ...item.link,
-                          id: normalizeTypedocDocId(item.link.id),
-                      },
-                  }
-                : {}),
-            items: decorateTypedocSidebarItems(item.items, depth + 1),
+            collapsed: true,
+            collapsible: true,
+            items: sectionItems,
+            label: sectionLabel,
+            type: "category" as const,
         };
-    });
-
-const loadTypedocSidebarItems = (): SidebarItem[] => {
-    if (!existsSync(typedocSidebarPath)) {
-        return [];
-    }
-
-    const loadedItems = requireFromSidebar(typedocSidebarPath) as unknown;
-
-    if (!Array.isArray(loadedItems)) {
-        return [];
-    }
-
-    if (!loadedItems.every(isSidebarItem)) {
-        return [];
-    }
-
-    return decorateTypedocSidebarItems(loadedItems);
-};
-
-const isMarkdownFile = (fileName: string): boolean => fileName.endsWith(".md");
-const toRuleDocId = (fileName: string): string => fileName.slice(0, -3);
-
-const discoveredRuleDocIds = readdirSync(rulesDirectoryPath, {
-    withFileTypes: true,
-})
-    .filter((entry) => entry.isFile() && isMarkdownFile(entry.name))
-    .map((entry) => toRuleDocId(entry.name))
-    .filter((ruleDocId) => !nonRuleDocIds.has(ruleDocId));
-
-const ruleDocIds = [
-    ...pinnedRuleDocIds.filter((ruleDocId) =>
-        discoveredRuleDocIds.includes(ruleDocId)
-    ),
-    ...discoveredRuleDocIds
-        .filter((ruleDocId) => !pinnedRuleDocIdSet.has(ruleDocId))
-        .sort((left, right) => left.localeCompare(right)),
-];
-
-const toNumberedRuleLabel = (ruleNumber: number, ruleDocId: string): string =>
-    `${String(ruleNumber).padStart(2, "0")} ${ruleDocId}`;
-
-const stylelintRuleLinkItems: SidebarLinkItem[] = ruleDocIds.map(
-    (ruleDocId, index) => ({
-        href: `/docs/rules/${ruleDocId}`,
-        label: toNumberedRuleLabel(index + 1, ruleDocId),
-        type: "link",
     })
-);
+    .filter((value) => value !== undefined);
 
-const typedocSidebarItems = loadTypedocSidebarItems();
-const developerSidebarItems: SidebarItem[] = [];
+const uncategorizedItems = typedocDocIds
+    .filter(
+        (docId) =>
+            docId !== "developer/api/index" &&
+            !sectionPrefixes.some((prefix) =>
+                docId.includes(`/modules/${prefix}`)
+            )
+    )
+    .map((docId) => ({
+        id: docId,
+        label: toLabel(docId),
+        type: "doc" as const,
+    }));
 
-if (existsSync(typedocIndexPath)) {
-    developerSidebarItems.push({
-        className: "sb-cat-api-overview",
+const developerItems = [
+    {
         id: "developer/api/index",
         label: "📘 API Overview",
-        type: "doc",
-    });
-}
-
-if (typedocSidebarItems.length > 0) {
-    developerSidebarItems.push({
-        className: "sb-cat-api-runtime",
-        collapsed: false,
-        collapsible: true,
-        items: typedocSidebarItems,
-        label: "🧠 TypeDoc API",
-        link: {
-            description:
-                "Generated API reference for the public plugin surface and internal helpers.",
-            title: "TypeDoc API",
-            type: "generated-index",
-        },
-        type: "category",
-    });
-}
-
-const docsSidebarItems: SidebarItem[] = [
-    {
-        className: "sb-doc-overview",
-        id: "intro",
-        label: "🏁 Overview",
-        type: "doc",
+        type: "doc" as const,
     },
-    {
-        className: "sb-doc-getting-started",
-        id: "getting-started",
-        label: "🚀 Getting Started",
-        type: "doc",
-    },
-    {
-        className: "sb-cat-guides",
-        collapsed: false,
-        items: [
-            {
-                className: "sb-guide-stylelint-bridge",
-                id: "stylelint-bridge",
-                label: "🎨 Stylelint bridge",
-                type: "doc",
-            },
-            {
-                className: "sb-guide-config-authoring",
-                id: "config-authoring",
-                label: "🛠️ Config authoring",
-                type: "doc",
-            },
-            {
-                className: "sb-guide-faq",
-                id: "faq",
-                label: "❓ FAQ",
-                type: "doc",
-            },
-        ],
-        label: "🧭 Guides",
-        type: "category",
-    },
-    {
-        className: "sb-cat-presets",
-        collapsed: true,
-        collapsible: true,
-        items: [
-            {
-                href: "/docs/rules/presets",
-                label: "🎛️ Preset Reference",
-                type: "link",
-            },
-            {
-                className: "sb-preset-recommended",
-                href: "/docs/rules/presets/recommended",
-                label: "🟡 Recommended",
-                type: "link",
-            },
-            {
-                className: "sb-preset-stylelint-only",
-                href: "/docs/rules/presets/stylelint-only",
-                label: "🎨 Stylelint bridge only",
-                type: "link",
-            },
-            {
-                className: "sb-preset-configuration",
-                href: "/docs/rules/presets/configuration",
-                label: "🔧 Configuration only",
-                type: "link",
-            },
-            {
-                className: "sb-preset-all",
-                href: "/docs/rules/presets/all",
-                label: "🟣 All",
-                type: "link",
-            },
-        ],
-        label: "🎛️ Presets",
-        type: "category",
-    },
-    {
-        className: "sb-cat-rules",
-        collapsed: false,
-        collapsible: true,
-        items: [
-            {
-                href: "/docs/rules/overview",
-                label: "🏁 Rules Overview",
-                type: "link",
-            },
-            {
-                className: "sb-cat-rules-stylelint",
-                collapsed: false,
-                collapsible: true,
-                items: [
-                    {
-                        href: "/docs/rules/category/stylelint",
-                        label: "📚 stylelint Rule Catalog",
-                        type: "link",
-                    },
-                    ...stylelintRuleLinkItems,
-                ],
-                label: "stylelint",
-                type: "category",
-            },
-        ],
-        label: "📏 Rules",
-        type: "category",
-    },
+    ...sectionCategories,
+    ...uncategorizedItems,
 ];
 
-const sidebars = {
-    developer: developerSidebarItems,
-    docs: docsSidebarItems,
-} satisfies SidebarsConfig;
+const sidebars: SidebarsConfig = {
+    docs: [
+        {
+            collapsed: false,
+            collapsible: true,
+            items: developerItems,
+            label: "🧩 Developer",
+            type: "category" as const,
+        },
+    ],
+};
 
 export default sidebars;

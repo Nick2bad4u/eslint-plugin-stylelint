@@ -62,8 +62,7 @@ csstools/use-nesting -- Global Docusaurus theme overrides intentionally trade st
     --sb-accent-api-types: #2dd4bf;
     --sb-accent-api-functions: #c084fc;
     --sb-accent-api-variables: #f59e0b;
-    --sb-accent-rules: #8b5cf6;
-    --sb-accent-rules-stylelint: #7c3aed;
+    --sb-accent-rules: #7c3aed;
     --sb-accent-presets: #c084fc;
     --sb-prefix-rule-number: #71717a;
     --sb-preset-recommended: #fde047;
@@ -98,8 +97,7 @@ csstools/use-nesting -- Global Docusaurus theme overrides intentionally trade st
     --sb-accent-api-types: #5eead4;
     --sb-accent-api-functions: #d8b4fe;
     --sb-accent-api-variables: #fbbf24;
-    --sb-accent-rules: #c4b5fd;
-    --sb-accent-rules-stylelint: #a78bfa;
+    --sb-accent-rules: #a78bfa;
     --sb-accent-presets: #ddd6fe;
     --sb-prefix-rule-number: #a1a1aa;
     --sb-preset-recommended: #fde047;
@@ -277,8 +275,7 @@ html[data-theme="light"] .navbar {
 .sb-cat-api-internal > .menu__list-item-collapsible .menu__link,
 .sb-cat-api-overview > .menu__link,
 .sb-cat-presets > .menu__list-item-collapsible .menu__link,
-.sb-cat-rules > .menu__list-item-collapsible .menu__link,
-.sb-cat-rules-stylelint > .menu__list-item-collapsible .menu__link {
+.sb-cat-rules > .menu__list-item-collapsible .menu__link {
     border-inline-start: 4px solid transparent;
     display: flex;
     align-items: center;
@@ -322,18 +319,13 @@ html[data-theme="light"] .navbar {
     border-inline-start-color: var(--sb-accent-rules);
 }
 
-.sb-cat-rules-stylelint > .menu__list-item-collapsible .menu__link {
-    border-inline-start-color: var(--sb-accent-rules-stylelint);
-}
-
 .sb-cat-developer > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-api-runtime > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-api-public > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-api-internal > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-guides > .menu__list-item-collapsible .menu__link::before,
 .sb-cat-presets > .menu__list-item-collapsible .menu__link::before,
-.sb-cat-rules > .menu__list-item-collapsible .menu__link::before,
-.sb-cat-rules-stylelint > .menu__list-item-collapsible .menu__link::before {
+.sb-cat-rules > .menu__list-item-collapsible .menu__link::before {
     margin-inline: 0 0.32rem;
     order: -1;
     padding: 0.07rem 0.45rem;
@@ -387,17 +379,10 @@ html[data-theme="light"] .navbar {
 }
 
 .sb-cat-rules > .menu__list-item-collapsible .menu__link::before {
-    content: "📏";
-    background-color: rgb(139 92 246 / 12%);
-    border: 1px solid rgb(139 92 246 / 34%);
-    color: var(--sb-accent-rules);
-}
-
-.sb-cat-rules-stylelint > .menu__list-item-collapsible .menu__link::before {
     content: "🎨";
     background-color: rgb(124 58 237 / 12%);
     border: 1px solid rgb(124 58 237 / 34%);
-    color: var(--sb-accent-rules-stylelint);
+    color: var(--sb-accent-rules);
 }
 
 .sb-cat-guides:not(.menu__list-item--collapsed)
@@ -439,12 +424,6 @@ html[data-theme="light"] .navbar {
 .sb-cat-rules:not(.menu__list-item--collapsed)
     > .menu__list-item-collapsible
     .menu__link {
-    box-shadow: inset 0 0 0 1px rgb(139 92 246 / 26%);
-}
-
-.sb-cat-rules-stylelint:not(.menu__list-item--collapsed)
-    > .menu__list-item-collapsible
-    .menu__link {
     box-shadow: inset 0 0 0 1px rgb(124 58 237 / 26%);
 }
 
@@ -453,7 +432,7 @@ html[data-theme="light"] .navbar {
 .sb-cat-api-internal .menu__list .menu__link,
 .sb-cat-guides .menu__list .menu__link,
 .sb-cat-presets .menu__list .menu__link,
-.sb-cat-rules-stylelint .menu__list .menu__link {
+.sb-cat-rules .menu__list .menu__link {
     border-inline-start: 3px solid transparent;
     border-radius: 0.45rem;
     line-height: 1.375;
@@ -527,7 +506,8 @@ html[data-theme="light"] .navbar {
     border-inline-start-color: var(--sb-preset-all);
 }
 
-.sb-cat-rules-stylelint .theme-doc-sidebar-item-link-level-3 > .menu__link {
+.sb-cat-rules .theme-doc-sidebar-item-link-level-2 > .menu__link,
+.sb-cat-rules .theme-doc-sidebar-item-link-level-3 > .menu__link {
     border-inline-start: 3px solid transparent;
     display: flex;
     align-items: baseline;
@@ -535,43 +515,58 @@ html[data-theme="light"] .navbar {
     padding-inline-start: calc(var(--ifm-menu-link-padding-horizontal) - 3px);
 }
 
-.sb-cat-rules-stylelint
+.sb-cat-rules
+    .theme-doc-sidebar-item-link-level-2:nth-child(6n + 1)
+    > .menu__link,
+.sb-cat-rules
     .theme-doc-sidebar-item-link-level-3:nth-child(6n + 1)
     > .menu__link {
     border-inline-start-color: #22c55e;
 }
 
-.sb-cat-rules-stylelint
+.sb-cat-rules
+    .theme-doc-sidebar-item-link-level-2:nth-child(6n + 2)
+    > .menu__link,
+.sb-cat-rules
     .theme-doc-sidebar-item-link-level-3:nth-child(6n + 2)
     > .menu__link {
     border-inline-start-color: #14b8a6;
 }
 
-.sb-cat-rules-stylelint
+.sb-cat-rules
+    .theme-doc-sidebar-item-link-level-2:nth-child(6n + 3)
+    > .menu__link,
+.sb-cat-rules
     .theme-doc-sidebar-item-link-level-3:nth-child(6n + 3)
     > .menu__link {
     border-inline-start-color: #06b6d4;
 }
 
-.sb-cat-rules-stylelint
+.sb-cat-rules
+    .theme-doc-sidebar-item-link-level-2:nth-child(6n + 4)
+    > .menu__link,
+.sb-cat-rules
     .theme-doc-sidebar-item-link-level-3:nth-child(6n + 4)
     > .menu__link {
     border-inline-start-color: #0ea5e9;
 }
 
-.sb-cat-rules-stylelint
+.sb-cat-rules
+    .theme-doc-sidebar-item-link-level-2:nth-child(6n + 5)
+    > .menu__link,
+.sb-cat-rules
     .theme-doc-sidebar-item-link-level-3:nth-child(6n + 5)
     > .menu__link {
     border-inline-start-color: #84cc16;
 }
 
-.sb-cat-rules-stylelint
-    .theme-doc-sidebar-item-link-level-3:nth-child(6n)
-    > .menu__link {
+.sb-cat-rules .theme-doc-sidebar-item-link-level-2:nth-child(6n) > .menu__link,
+.sb-cat-rules .theme-doc-sidebar-item-link-level-3:nth-child(6n) > .menu__link {
     border-inline-start-color: #8b5cf6;
 }
 
-.sb-cat-rules-stylelint .theme-doc-sidebar-item-link-level-3 .menu__link {
+.sb-cat-rules .theme-doc-sidebar-item-link-level-2 .menu__link,
+.sb-cat-rules .theme-doc-sidebar-item-link-level-3 .menu__link {
     font-variant-numeric: tabular-nums;
 }
 

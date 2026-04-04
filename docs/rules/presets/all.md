@@ -12,6 +12,16 @@ export default [
 ];
 ```
 
+## What this preset includes
+
+- The Stylelint bridge rule (`stylelint`)
+- Configuration-authoring policy rules
+- Opinionated operational policy rules (cache/formatter/fix/default-severity/reporting preferences)
+
+## What this preset does not include
+
+- Nothing from this plugin is excluded; this is the broadest preset.
+
 ## Related preset docs
 
 - [Presets overview](./index.md)
@@ -19,7 +29,7 @@ export default [
 - [Stylelint-only preset](./stylelint-only.md)
 - [Configuration-only preset](./configuration.md)
 
-## Notable rules in this preset
+## Rules in this preset
 
 For the exhaustive generated rule matrix, see [Presets overview](./index.md).
 

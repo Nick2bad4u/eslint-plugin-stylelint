@@ -16,12 +16,22 @@ export default [
 ];
 ```
 
-## Preferred docs
+## What this preset includes
+
+- Legacy alias export for this plugin's preset surface (`stylelint2.configs.configs`)
+- Same active rule set as [`recommended`](./recommended.md)
+
+## What this preset does not include
+
+- Additional rules beyond what `recommended` already enables
+- Any behavior differences from `recommended` (it is an alias)
+
+## Related preset docs
 
 - [Configuration-only preset](./configuration.md)
 - [Presets overview](./index.md)
 
-## Notable rules in this preset
+## Rules in this preset
 
 For the exhaustive generated rule matrix, see [Configuration-only preset](./configuration.md) and [Presets overview](./index.md).
 

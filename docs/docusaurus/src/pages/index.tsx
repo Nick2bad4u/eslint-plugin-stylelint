@@ -51,7 +51,7 @@ const heroBadges = [
 const heroQuickLinks = [
     {
         label: "📏 Rule catalog",
-        to: "/docs/rules/category/stylelint",
+        to: "/docs/rules",
     },
     {
         label: "🎛️ Presets",

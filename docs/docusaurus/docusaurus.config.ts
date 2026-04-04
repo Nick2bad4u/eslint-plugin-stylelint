@@ -1,7 +1,6 @@
 import { themes as prismThemes } from "prism-react-renderer";
 
 import type { Config, PluginModule } from "@docusaurus/types";
-import type { Options as DocsPluginOptions } from "@docusaurus/plugin-content-docs";
 import type * as Preset from "@docusaurus/preset-classic";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
@@ -277,7 +276,7 @@ const config: Config = {
                 showLastUpdateAuthor: true,
                 showLastUpdateTime: true,
                 sidebarPath: "./sidebars.rules.ts",
-            } satisfies DocsPluginOptions,
+            },
         ],
     ],
     presets: [
@@ -416,11 +415,11 @@ const config: Config = {
                     items: [
                         {
                             label: "🏁 Overview",
-                            to: "/docs/intro",
+                            to: "/docs/rules/guides/intro",
                         },
                         {
                             label: "🚀 Getting Started",
-                            to: "/docs/getting-started",
+                            to: "/docs/rules/guides/getting-started",
                         },
                         {
                             label: "🎛️ Presets",
@@ -448,7 +447,7 @@ const config: Config = {
                             label: "🧩 API Reference",
                         },
                         {
-                            to: "/docs/faq",
+                            to: "/docs/rules/guides/faq",
                             label: "❓ FAQ",
                         },
                     ],
@@ -494,37 +493,55 @@ const config: Config = {
                     activeBaseRegex: "^/docs(?:/(?!developer(?:/|$)).*)?$",
                     label: "📚 Docs",
                     position: "left",
-                    to: "/docs/intro",
+                    to: "/docs/rules/guides/intro",
                     type: "dropdown",
                     items: [
                         {
                             label: "🏁 Overview",
-                            to: "/docs/intro",
+                            to: "/docs/rules/guides/intro",
                         },
                         {
                             label: "🚀 Getting Started",
-                            to: "/docs/getting-started",
+                            to: "/docs/rules/guides/getting-started",
                         },
                         {
                             label: "🎨 Stylelint Bridge",
-                            to: "/docs/stylelint-bridge",
+                            to: "/docs/rules/guides/stylelint-bridge",
                         },
                         {
                             label: "🛠️ Config Authoring",
-                            to: "/docs/config-authoring",
+                            to: "/docs/rules/guides/config-authoring",
                         },
                         {
-                            label: "🏁 Rules Overview",
-                            to: "/docs/rules/overview",
+                            label: "❓ FAQ",
+                            to: "/docs/rules/guides/faq",
+                        },
+                    ],
+                },
+                {
+                    activeBaseRegex: "^/docs/rules(?:/|$)",
+                    label: "📏 Rules",
+                    position: "left",
+                    to: "/docs/rules/getting-started",
+                    type: "dropdown",
+                    items: [
+                        {
+                            label: "📚 Rule Catalog",
+                            to: "/docs/rules",
                         },
                         {
-                            label: "🧪 stylelint Rule",
-                            to: "/docs/rules/stylelint",
+                            label: "🧪 Stylelint Bridge",
+                            to: "/docs/rules/guides/stylelint-bridge",
                         },
-                        {
-                            label: "📚 stylelint Rule Catalog",
-                            to: "/docs/rules/category/stylelint",
-                        },
+                    ],
+                },
+                {
+                    activeBaseRegex: "^/docs/rules/presets(?:/|$)",
+                    label: "🎛️ Presets",
+                    position: "left",
+                    to: "/docs/rules/presets",
+                    type: "dropdown",
+                    items: [
                         {
                             label: "🎛️ Preset Reference",
                             to: "/docs/rules/presets",
@@ -534,11 +551,11 @@ const config: Config = {
                             to: "/docs/rules/presets/recommended",
                         },
                         {
-                            label: "🎨 Stylelint bridge only",
+                            label: "🎨 Stylelint Bridge Only",
                             to: "/docs/rules/presets/stylelint-only",
                         },
                         {
-                            label: "🔧 Configuration only",
+                            label: "🔧 Configuration Only",
                             to: "/docs/rules/presets/configuration",
                         },
                         {
@@ -564,6 +581,15 @@ const config: Config = {
                         {
                             label: "🧪 Stylelint Inspector",
                             href: `https://nick2bad4u.github.io/${projectName}/stylelint-inspector/`,
+                        },
+                        {
+                            className: "navbar-dropdown-divider-before",
+                            label: "󰏗 npm Package",
+                            href: `https://www.npmjs.com/package/${projectName}`,
+                        },
+                        {
+                            label: "🎨 Stylelint",
+                            href: "https://stylelint.io/",
                         },
                     ],
                 },

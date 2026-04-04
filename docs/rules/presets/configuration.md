@@ -18,19 +18,7 @@ export default [
 
 ## What this preset includes
 
-- `stylelint-2/prefer-stylelint-cache`
-- `stylelint-2/disallow-stylelint-default-severity`
-- `stylelint-2/prefer-stylelint-fix`
-- `stylelint-2/prefer-stylelint-formatter`
-- `stylelint-2/disallow-stylelint-ignore-disables`
-- `stylelint-2/disallow-stylelint-ignore-files`
-- `stylelint-2/prefer-stylelint-define-config`
-- `stylelint-2/prefer-stylelint-report-descriptionless-disables`
-- `stylelint-2/prefer-stylelint-report-invalid-scope-disables`
-- `stylelint-2/prefer-stylelint-report-needless-disables`
-- `stylelint-2/prefer-stylelint-report-unscoped-disables`
-- `stylelint-2/require-stylelint-overrides-configuration`
-- `stylelint-2/require-stylelint-overrides-files-array`
+Configuration-focused policy rules only. See the canonical rules table below for the exact preset contents.
 
 ## What this preset does not include
 
@@ -45,7 +33,7 @@ export default [
 - [Stylelint-only preset](./stylelint-only.md)
 - [All preset](./all.md)
 
-## Notable rules in this preset
+## Rules in this preset
 
 For the exhaustive generated rule matrix, see [Presets overview](./index.md).
 
