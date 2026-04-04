@@ -1,128 +1,145 @@
 /**
  * @packageDocumentation
- * Sidebars for the classic docs plugin (developer docs only).
+ * Sidebars for the classic docs plugin (developer docs).
  */
-import { readdirSync } from "node:fs";
-import { join } from "node:path";
+import { createRequire } from "node:module";
 
 import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
-const docsRootPath = join(process.cwd(), "docs", "docusaurus", "site-docs");
-const typedocRootPath = join(docsRootPath, "developer", "api");
+const require = createRequire(import.meta.url);
 
-const isMarkdownFileName = (fileName: string): boolean =>
-    /\.mdx?$/u.test(fileName);
+const typedocSidebar: unknown = require("./site-docs/developer/api/typedoc-sidebar.cjs");
 
-const toDocId = (fileName: string): string =>
-    `developer/api/${fileName.replace(/\.mdx?$/u, "")}`;
+type UnknownRecord = Record<string, unknown>;
 
-const toLabel = (docId: string): string => {
-    if (docId.endsWith("/index")) {
-        return "📘 API Overview";
+/**
+ * @param value - Unknown runtime value.
+ *
+ * @returns Whether the value is a non-array object record.
+ */
+const isRecord = (value: unknown): value is UnknownRecord =>
+    typeof value === "object" && value !== null && !Array.isArray(value);
+
+/**
+ * Normalize generated TypeDoc ids from "../site-docs/developer/api/..." to
+ * "developer/api/...".
+ *
+ * @param value - Raw generated id.
+ *
+ * @returns Normalized Docusaurus docs id.
+ */
+const normalizeTypedocId = (value: string): string =>
+    value
+        .replace(/^\.\.\/site-docs\//u, "")
+        .replace(
+            /\/stylelintconfig-references(\/|$)/u,
+            "/stylelint2-config-references$1"
+        );
+
+/**
+ * Recursively normalize generated TypeDoc sidebar items so they can be mounted
+ * in the classic docs sidebar.
+ *
+ * @param value - Raw generated sidebar item.
+ *
+ * @returns Normalized sidebar item.
+ */
+const normalizeTypedocSidebarItem = (value: unknown): unknown => {
+    if (Array.isArray(value)) {
+        return value.map((item) => normalizeTypedocSidebarItem(item));
     }
 
-    const raw = docId
-        .replace(/^developer\/api\//u, "")
-        .replace(/^modules\//u, "")
-        .replace(
-            /\.(?:interface|type|class|enum|function|namespace|module)$/u,
-            ""
-        )
-        .replaceAll("-", " ")
-        .trim();
+    if (!isRecord(value)) {
+        return value;
+    }
 
-    const titleCase = raw.replace(
-        /(^|\s)([a-zA-Z])/gu,
-        (_match, prefix: string, character: string) =>
-            `${prefix}${character.toUpperCase()}`
-    );
-
-    return titleCase.length > 0 ? titleCase : docId;
-};
-
-const typedocDocIds = readdirSync(typedocRootPath, { withFileTypes: true })
-    .filter(
-        (entry) =>
-            entry.isFile() &&
-            isMarkdownFileName(entry.name) &&
-            entry.name !== "index.md"
-    )
-    .map((entry) => toDocId(entry.name))
-    .sort((left, right) => left.localeCompare(right));
-
-const sectionPrefixes = [
-    "interfaces/",
-    "classes/",
-    "types/",
-    "functions/",
-    "variables/",
-    "type-aliases/",
-] as const;
-
-const sectionCategories = sectionPrefixes
-    .map((prefix) => {
-        const sectionItems = typedocDocIds
-            .filter((docId) => docId.includes(`/modules/${prefix}`))
-            .map((docId) => ({
-                id: docId,
-                label: toLabel(docId),
-                type: "doc" as const,
-            }));
-
-        if (sectionItems.length === 0) {
-            return undefined;
+    const normalizedEntries = Object.entries(value).map(([key, entryValue]) => {
+        if (key === "id" && typeof entryValue === "string") {
+            return [key, normalizeTypedocId(entryValue)] as const;
         }
 
-        const sectionLabel = prefix
-            .replaceAll("/", "")
-            .replaceAll("-", " ")
-            .replace(
-                /(^|\s)([a-zA-Z])/gu,
-                (_m, p: string, c: string) => `${p}${c.toUpperCase()}`
-            );
+        return [key, normalizeTypedocSidebarItem(entryValue)] as const;
+    });
+    const normalized = Object.fromEntries(normalizedEntries) as UnknownRecord;
 
-        return {
-            collapsed: true,
-            collapsible: true,
-            items: sectionItems,
-            label: sectionLabel,
-            type: "category" as const,
-        };
-    })
-    .filter((value) => value !== undefined);
+    if (
+        normalized["type"] === "category" &&
+        typeof normalized["label"] === "string"
+    ) {
+        const normalizedLabel = normalized["label"].toLowerCase();
 
-const uncategorizedItems = typedocDocIds
-    .filter(
-        (docId) =>
-            docId !== "developer/api/index" &&
-            !sectionPrefixes.some((prefix) =>
-                docId.includes(`/modules/${prefix}`)
-            )
-    )
-    .map((docId) => ({
-        id: docId,
-        label: toLabel(docId),
-        type: "doc" as const,
-    }));
+        if (normalizedLabel === "plugin") {
+            normalized["className"] = "sb-cat-api-runtime";
+            normalized["collapsed"] = false;
+            normalized["collapsible"] = true;
+            normalized["label"] = "📦 Plugin API";
+        }
 
-const developerItems = [
-    {
-        id: "developer/api/index",
-        label: "📘 API Overview",
-        type: "doc" as const,
-    },
-    ...sectionCategories,
-    ...uncategorizedItems,
-];
+        if (normalizedLabel === "internal") {
+            normalized["className"] = "sb-cat-api-internal";
+            normalized["collapsed"] = false;
+            normalized["collapsible"] = true;
+            normalized["label"] = "🧬 Internal API";
+        }
+    }
+
+    return normalized;
+};
+
+const typedocSidebarItems = Array.isArray(typedocSidebar)
+    ? typedocSidebar.map((item) => normalizeTypedocSidebarItem(item))
+    : [];
 
 const sidebars: SidebarsConfig = {
     docs: [
         {
+            className: "sb-cat-developer",
             collapsed: false,
             collapsible: true,
-            items: developerItems,
             label: "🧩 Developer",
-            type: "category" as const,
+            type: "category",
+            items: [
+                {
+                    className: "sb-cat-api-overview",
+                    id: "developer/api/index",
+                    label: "📘 API Overview",
+                    type: "doc",
+                },
+                {
+                    className: "sb-cat-dev-links",
+                    collapsed: false,
+                    collapsible: true,
+                    label: "🧭 Developer Guides",
+                    type: "category",
+                    items: [
+                        {
+                            dirName: "developer/guides",
+                            type: "autogenerated",
+                        },
+                    ],
+                },
+                {
+                    className: "sb-cat-developer-adrs",
+                    collapsed: false,
+                    collapsible: true,
+                    label: "🏛️ ADRs",
+                    type: "category",
+                    items: [
+                        {
+                            dirName: "developer/adr",
+                            type: "autogenerated",
+                        },
+                    ],
+                },
+                {
+                    className: "sb-cat-api-runtime",
+                    collapsed: false,
+                    collapsible: true,
+                    label: "📦 TypeDoc API Reference",
+                    type: "category",
+                    items: typedocSidebarItems as SidebarsConfig["docs"],
+                },
+            ],
         },
     ],
 };

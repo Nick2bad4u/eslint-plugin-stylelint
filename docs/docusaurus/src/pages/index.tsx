@@ -59,7 +59,7 @@ const heroQuickLinks = [
     },
     {
         label: "🎨 Stylelint bridge",
-        to: "/docs/stylelint-bridge",
+        to: "/docs/rules/guides/stylelint-bridge",
     },
     {
         href: "https://stylelint.io/",
