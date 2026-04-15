@@ -219,26 +219,6 @@ const config = defineConfig({
         },
         {
             /**
-             * Configuration for styled-jsx syntax in React components.
-             *
-             * @remarks
-             * Styled-jsx uses a different syntax pattern than other CSS-in-JS
-             * solutions, requiring a specialized parser and rule adjustments.
-             */
-            // Styled JSX files
-            customSyntax: "postcss-styled-jsx",
-            files: ["**/*.{jsx,tsx}"],
-            rules: {
-                // Rules for styled-jsx syntax
-                "at-rule-no-unknown": null,
-                "declaration-no-important": null,
-                "max-nesting-depth": null,
-                "selector-max-id": null,
-                "selector-max-specificity": null,
-            },
-        },
-        {
-            /**
              * Configuration for CSS Modules with local scoping.
              *
              * @remarks
@@ -1011,13 +991,15 @@ const config = defineConfig({
         "prettier/prettier": true,
         "property-allowed-list": null,
         "property-disallowed-list": null,
+        "property-layout-mappings": "flow-relative",
         "property-no-deprecated": true,
-        "property-no-unknown": true,
 
+        "property-no-unknown": true,
+        "relative-selector-nesting-notation": "explicit",
         "rule-empty-line-before": null,
+
         "rule-nesting-at-rule-required-list": null,
         "rule-selector-property-disallowed-list": null,
-
         /**
          * Scale-based design system rules.
          *
@@ -1030,9 +1012,9 @@ const config = defineConfig({
          */
         // Scale rules (stylelint-scales)
         "scale-unlimited/declaration-strict-value": null,
+
         "scales/alpha-values": null,
         "scales/border-widths": null,
-
         /**
          * Font size scale configuration.
          *
@@ -1097,8 +1079,18 @@ const config = defineConfig({
                 },
             ],
         ],
+
         "scales/font-weights": null,
         "scales/letter-spacings": null,
+
+        /**
+         * Prettier integration for code formatting.
+         *
+         * @remarks
+         * Enables Prettier formatting rules within Stylelint to ensure
+         * consistent code style. Prettier handles most formatting concerns.
+         */
+        // Prettier integration
 
         /**
          * Line height scale configuration.
@@ -1118,21 +1110,11 @@ const config = defineConfig({
             2,
         ],
         "scales/radii": null,
-
-        /**
-         * Prettier integration for code formatting.
-         *
-         * @remarks
-         * Enables Prettier formatting rules within Stylelint to ensure
-         * consistent code style. Prettier handles most formatting concerns.
-         */
-        // Prettier integration
-
         "scales/sizes": null,
         "scales/space": null,
+
         "scales/word-spacings": null,
         "scales/z-indices": null,
-
         /**
          * SCSS (Sass) specific linting rules.
          *
@@ -1185,9 +1167,9 @@ const config = defineConfig({
         "selector-anb-no-unmatchable": true,
         "selector-attribute-name-disallowed-list": null,
         "selector-attribute-operator-allowed-list": null,
+
         "selector-attribute-operator-disallowed-list": null,
         "selector-attribute-quotes": "always",
-
         /**
          * Rule to enforce consistent class selector patterns.
          *
@@ -1212,6 +1194,7 @@ const config = defineConfig({
         "selector-max-type": null,
         "selector-max-universal": null,
         "selector-nested-pattern": null,
+        "selector-no-deprecated": true,
         "selector-no-qualifying-type": null,
         "selector-not-notation": "complex",
         "selector-pseudo-class-allowed-list": null,

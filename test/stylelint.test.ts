@@ -11,6 +11,12 @@ import stylelint2Plugin from "../src/plugin";
 const stylelintConfigFilePath = fileURLToPath(
     new URL("fixtures/stylelint/short-hex.config.mjs", import.meta.url)
 );
+const deprecatedSelectorConfigFilePath = fileURLToPath(
+    new URL(
+        "fixtures/stylelint/selector-no-deprecated.config.mjs",
+        import.meta.url
+    )
+);
 const stylesheetsConfig = stylelint2Plugin.configs
     .stylelintOnly as Linter.Config;
 
@@ -85,6 +91,22 @@ describe("stylelint bridge rule", () => {
 
         expect(parseErrorMessage).toMatch(
             /CssSyntaxError|Unclosed block|Unknown word/v
+        );
+    });
+
+    it("surfaces newly added Stylelint core rules through the bridge", async () => {
+        const eslint = createCssLintEngine(false, {
+            configFile: deprecatedSelectorConfigFilePath,
+        });
+        const [result] = await eslint.lintText(`nobr {}`, {
+            filePath: "sample.css",
+        });
+
+        expect(result).toBeDefined();
+        expect(result!.messages).toHaveLength(1);
+        expect(result!.messages[0]?.ruleId).toBe("stylelint-2/stylelint");
+        expect(result!.messages[0]?.message).toContain(
+            "selector-no-deprecated"
         );
     });
 
