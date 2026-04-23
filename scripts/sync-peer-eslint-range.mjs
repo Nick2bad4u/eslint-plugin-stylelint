@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * Keep `peerDependencies.eslint` aligned with the currently installed
- * `devDependencies.eslint` upper range.
+ * Keep selected peer dependency ranges aligned to the currently installed top
+ * supported major from matching devDependencies entries, while preserving a
+ * stable minimum supported major.
  *
- * Why: npm does not support `$eslint` indirection in `peerDependencies` (that
- * syntax is supported for `overrides` only), so we synchronize the top-end
- * range explicitly after dependency updates.
+ * Why: npm does not support `$name` indirection in `peerDependencies` (that
+ * syntax is supported for `overrides` only), so we synchronize explicit peer
+ * ranges after dependency updates.
  */
 
 import { readFile, writeFile } from "node:fs/promises";
@@ -14,8 +15,8 @@ import { fileURLToPath } from "node:url";
 
 /**
  * The file path to the package.json file, resolved from the current module's
- * URL. This is used to read and update the package.json file for synchronizing
- * the peer dependency range for eslint.
+ * URL. This is used to read and update package.json during peer dependency
+ * range synchronization.
  *
  * @type {string}
  *
@@ -28,17 +29,27 @@ const packageJsonPath = fileURLToPath(
     new URL("../package.json", import.meta.url)
 );
 /**
- * The minimum supported range for eslint in peer dependencies. This is used as
- * a fallback when the existing peer range is not a valid string or cannot be
- * parsed to determine a floor candidate. This ensures that the peer dependency
- * range does not fall below a certain baseline, which is important for
- * maintaining compatibility with supported versions of eslint.
+ * Peer dependency names that should mirror top supported majors from
+ * corresponding devDependencies entries.
  *
- * @type {string}
- *
- * @see resolvePeerFloorRange
+ * @type {readonly string[]}
  */
-const minimumSupportedEslintRange = "^9.0.0";
+const synchronizedPeerDependencyNames = [
+    "eslint",
+    "stylelint",
+    "typescript",
+];
+
+/**
+ * Stable minimum supported peer ranges by dependency.
+ *
+ * @type {Readonly<Record<string, string>>}
+ */
+const minimumSupportedPeerRanges = {
+    eslint: "^9.0.0",
+    stylelint: "^16.0.0",
+    typescript: "^5.0.0",
+};
 
 /**
  * Read and parse package.json.
@@ -70,31 +81,57 @@ const readPackageJson = async () => {
 };
 
 /**
- * Resolve a floor range from an existing peer range when possible. Falls back
- * to repository baseline.
+ * Normalize a semver-ish range to a caret range pinned to the detected major.
  *
- * @type {(existingPeerRange: unknown) => string}
+ * Examples:
  *
- * @param {unknown} existingPeerRange
+ * - `^17.9.0` -> `^17.0.0`
+ * - `>=22.0.0` -> `^22.0.0`
+ * - `~10.2.1` -> `^10.0.0`
+ *
+ * @type {(rangeExpression: string) => string}
+ *
+ * @param {string} rangeExpression
  *
  * @returns {string}
+ *
+ * @throws {TypeError} When no major version can be parsed from the input.
  */
-const resolvePeerFloorRange = (existingPeerRange) => {
-    if (typeof existingPeerRange !== "string") {
-        return minimumSupportedEslintRange;
-    }
-
+const toTopSupportedMajorRange = (rangeExpression) => {
     /** @type {string[]} */
-    const [floorCandidate] = existingPeerRange
+    const candidates = rangeExpression
         .split("||")
-        .map((part) => part.trim());
+        .map((candidate) => candidate.trim())
+        .filter(Boolean);
 
-    if (!floorCandidate) {
-        return minimumSupportedEslintRange;
+    /** @type {string | undefined} */
+    const topCandidate = candidates.at(-1);
+
+    if (typeof topCandidate !== "string") {
+        throw new TypeError(
+            `Expected a non-empty semver range expression, received: ${rangeExpression}`
+        );
     }
 
-    /** @type {string} */
-    return floorCandidate;
+    /** @type {RegExpMatchArray | null} */
+    const semverMatch = /(\d+)\.(\d+)\.(\d+)/u.exec(topCandidate);
+
+    if (semverMatch === null) {
+        throw new TypeError(
+            `Unable to resolve top supported major from range: ${rangeExpression}`
+        );
+    }
+
+    /** @type {string | undefined} */
+    const majorVersion = semverMatch[1];
+
+    if (typeof majorVersion !== "string") {
+        throw new TypeError(
+            `Unable to resolve a major version from range: ${rangeExpression}`
+        );
+    }
+
+    return `^${majorVersion}.0.0`;
 };
 
 /**
@@ -127,50 +164,77 @@ const main = async () => {
         );
     }
 
-    /** @type {unknown} */
-    const devDependencyEslintRange = devDependencies["eslint"];
+    /** @type {string[]} */
+    const updatedDependencyNames = [];
 
-    if (
-        typeof devDependencyEslintRange !== "string" ||
-        devDependencyEslintRange.trim().length === 0
-    ) {
-        throw new TypeError(
-            "Expected devDependencies.eslint to be a non-empty string range"
-        );
+    for (const dependencyName of synchronizedPeerDependencyNames) {
+        /** @type {unknown} */
+        const devDependencyRange = devDependencies[dependencyName];
+
+        if (
+            typeof devDependencyRange !== "string" ||
+            devDependencyRange.length === 0
+        ) {
+            continue;
+        }
+
+        /** @type {string} */
+        const topSupportedRange = toTopSupportedMajorRange(devDependencyRange);
+        /** @type {string | undefined} */
+        const minimumSupportedRange =
+            minimumSupportedPeerRanges[dependencyName];
+
+        if (typeof minimumSupportedRange !== "string") {
+            continue;
+        }
+
+        /** @type {string} */
+        const floorSupportedRange = minimumSupportedRange;
+        /** @type {string} */
+        const nextPeerRange =
+            floorSupportedRange === topSupportedRange
+                ? topSupportedRange
+                : `${floorSupportedRange} || ${topSupportedRange}`;
+
+        if (peerDependencies[dependencyName] === nextPeerRange) {
+            continue;
+        }
+
+        peerDependencies[dependencyName] = nextPeerRange;
+        updatedDependencyNames.push(dependencyName);
     }
 
-    /** @type {string} */
-    const peerFloorRange = resolvePeerFloorRange(peerDependencies["eslint"]);
-    /** @type {string} */
-    const nextPeerEslintRange = `${peerFloorRange} || ${devDependencyEslintRange}`;
-
-    /** @type {string} */
-    if (peerDependencies["eslint"] === nextPeerEslintRange) {
-        /** @type {string} */
+    if (updatedDependencyNames.length === 0) {
         console.log(
-            `peerDependencies.eslint already aligned: ${nextPeerEslintRange}`
+            "peerDependencies already aligned to floor+top supported major ranges"
         );
-        /** @type {void} */
         return;
     }
 
-    peerDependencies["eslint"] = nextPeerEslintRange;
     try {
-        /** @type {string} */
         await writeFile(
-            /** @type {string} */
             packageJsonPath,
             `${JSON.stringify(packageJson, null, 4)}\n`,
             "utf8"
         );
-        /** @type {string} */
-        console.log(
-            `Updated peerDependencies.eslint to: ${nextPeerEslintRange}`
-        );
+
+        for (const dependencyName of updatedDependencyNames) {
+            /** @type {unknown} */
+            const nextPeerRange = peerDependencies[dependencyName];
+
+            if (typeof nextPeerRange !== "string") {
+                throw new TypeError(
+                    `Expected peerDependencies.${dependencyName} to be a string after synchronization.`
+                );
+            }
+
+            console.log(
+                `Updated peerDependencies.${dependencyName} to: ${nextPeerRange}`
+            );
+        }
     } catch (error) {
-        /** @type {Error} */
         throw new TypeError(
-            `Failed to write updated package.json with new peerDependencies.eslint: ${error}`,
+            `Failed to write updated package.json with synchronized peerDependencies: ${error}`,
             { cause: error }
         );
     }
@@ -193,14 +257,13 @@ const main = async () => {
  * @see writeFile
  * @see readPackageJson
  * @see isRecord
- * @see resolvePeerFloorRange
+ * @see toTopSupportedMajorRange
  * @see main
  */
 try {
     await main();
 } catch (error) {
-    /** @type {Error} */
-    console.error("Failed to synchronize peerDependencies.eslint:", error);
+    console.error("Failed to synchronize peer dependency ranges:", error);
     /** @type {number} */
     process.exitCode = 1;
 }
