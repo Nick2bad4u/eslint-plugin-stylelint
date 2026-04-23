@@ -1,3 +1,7 @@
+/**
+ * @packageDocumentation
+ * Dynamic sidebar generation for plugin rule documentation sections.
+ */
 import { readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -79,7 +83,8 @@ const stylelintRuleItems: SidebarDocItem[] = ruleDocIds.map(
     })
 );
 
-const sidebars = {
+/** Complete sidebar structure for docs site navigation. */
+const sidebars: SidebarsConfig = {
     rules: [
         {
             className: "sb-cat-guides",

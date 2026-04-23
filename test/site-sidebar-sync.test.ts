@@ -83,7 +83,7 @@ describe("docusaurus rules sidebar sync", () => {
     it("includes every registered rule doc id in resolved sidebar items", () => {
         expect.hasAssertions();
 
-        const rulesSidebarItems = getRulesSidebarItems(sidebars.rules);
+        const rulesSidebarItems = getRulesSidebarItems(sidebars["rules"]);
 
         expect(rulesSidebarItems.length).toBeGreaterThan(0);
 
