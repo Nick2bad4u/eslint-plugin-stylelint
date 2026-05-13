@@ -1,11 +1,13 @@
 import type { TSESTree } from "@typescript-eslint/utils";
 
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 /**
  * @packageDocumentation
  * Encourage `defineConfig()` for authored Stylelint config modules.
  */
-import { basename } from "node:path";
+import path from "node:path";
 
+import { isExportDefaultDeclarationNode } from "../_internal/stylelint-config-object.js";
 import {
     createTypedRule,
     type RuleModuleWithDocs,
@@ -21,17 +23,17 @@ const configBaseNamePattern =
     /^(?:stylelint\.config|\.stylelintrc)\.(?:[cm]?js|[cm]?ts)$/v;
 
 const isConfigFile = (filename: string): boolean =>
-    configBaseNamePattern.test(basename(filename));
+    configBaseNamePattern.test(path.basename(filename));
 
 const hasDefineConfigImport = (body: readonly TSESTree.Node[]): boolean =>
     body.some(
         (statement) =>
-            statement.type === "ImportDeclaration" &&
+            statement.type === AST_NODE_TYPES.ImportDeclaration &&
             statement.source.value === importSource &&
             statement.specifiers.some(
                 (specifier) =>
-                    specifier.type === "ImportSpecifier" &&
-                    specifier.imported.type === "Identifier" &&
+                    specifier.type === AST_NODE_TYPES.ImportSpecifier &&
+                    specifier.imported.type === AST_NODE_TYPES.Identifier &&
                     specifier.imported.name === "defineConfig"
             )
     );
@@ -40,7 +42,7 @@ const getImportInsertionOffset = (body: readonly TSESTree.Node[]): number => {
     for (let index = body.length - 1; index >= 0; index -= 1) {
         const statement = body[index];
 
-        if (statement?.type === "ImportDeclaration") {
+        if (statement?.type === AST_NODE_TYPES.ImportDeclaration) {
             return statement.range[1];
         }
     }
@@ -61,12 +63,15 @@ const preferStylelintDefineConfigRule: RuleModuleWithDocs<MessageIds, Options> =
                         return;
                     }
 
-                    const exportDefaultNode =
-                        node as TSESTree.ExportDefaultDeclaration;
+                    if (!isExportDefaultDeclarationNode(node)) {
+                        return;
+                    }
+
+                    const exportDefaultNode = node;
 
                     if (
                         exportDefaultNode.declaration.type !==
-                        "ObjectExpression"
+                        AST_NODE_TYPES.ObjectExpression
                     ) {
                         return;
                     }

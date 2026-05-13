@@ -1,9 +1,10 @@
+import type { TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Prefer enabling top-level Stylelint fix configuration in authored config files.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
-
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 import { arrayFirst } from "ts-extras";
 
 import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
@@ -11,6 +12,7 @@ import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
 import {
     getExportedStylelintConfigObject,
     getObjectPropertyByName,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "../_internal/stylelint-config-object.js";
 import { createTypedRule, toRuleListener } from "../_internal/typed-rule.js";
@@ -21,10 +23,10 @@ type Options = readonly [];
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 const getLineEnding = (text: string): "\n" | "\r\n" =>
     text.includes("\r\n") ? "\r\n" : "\n";
@@ -33,7 +35,7 @@ const getIndentation = (node: Readonly<TSESTree.Node> | undefined): string =>
     node === undefined ? "    " : " ".repeat(node.loc.start.column);
 
 const isFixEnabled = (expression: Readonly<TSESTree.Expression>): boolean => {
-    if (expression.type === "Literal") {
+    if (expression.type === AST_NODE_TYPES.Literal) {
         return (
             expression.value === true ||
             expression.value === "strict" ||
@@ -57,12 +59,11 @@ const preferStylelintFixRule: RuleModuleWithDocs<MessageIds, Options> =
 
             return toRuleListener({
                 ExportDefaultDeclaration(node: unknown) {
-                    if (node === null || typeof node !== "object") {
+                    if (!isExportDefaultDeclarationNode(node)) {
                         return;
                     }
 
-                    const exportDefaultNode =
-                        node as TSESTree.ExportDefaultDeclaration;
+                    const exportDefaultNode = node;
                     const configObject = getExportedStylelintConfigObject(
                         exportDefaultNode.declaration
                     );

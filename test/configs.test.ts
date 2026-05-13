@@ -99,8 +99,8 @@ describe("stylelint-2 plugin configs", () => {
 
         expect(stylelint2Plugin.configs.configuration).toMatchObject({
             files: [
-                "**/stylelint.config.{js,mjs,cjs,ts,mts,cts}",
                 "**/.stylelintrc.{js,mjs,cjs,ts,mts,cts}",
+                "**/stylelint.config.{js,mjs,cjs,ts,mts,cts}",
             ],
         });
     });

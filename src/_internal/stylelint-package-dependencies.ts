@@ -3,7 +3,7 @@
  * Workspace dependency lookup helpers for Stylelint config validation rules.
  */
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, isAbsolute, resolve } from "node:path";
+import path from "node:path";
 import { arrayFirst, isDefined, objectKeys, stringSplit } from "ts-extras";
 
 type DependencyRecord = Readonly<Record<string, string>>;
@@ -24,7 +24,7 @@ const dependencyNameSetCache = new Map<
 const getNearestPackageJsonPath = (
     startDirectory: string
 ): string | undefined => {
-    const normalizedStartDirectory = resolve(startDirectory);
+    const normalizedStartDirectory = path.resolve(startDirectory);
 
     if (nearestPackageJsonCache.has(normalizedStartDirectory)) {
         return nearestPackageJsonCache.get(normalizedStartDirectory);
@@ -33,8 +33,9 @@ const getNearestPackageJsonPath = (
     let currentDirectory = normalizedStartDirectory;
 
     while (true) {
-        const packageJsonPath = resolve(currentDirectory, "package.json");
+        const packageJsonPath = path.resolve(currentDirectory, "package.json");
 
+        // eslint-disable-next-line n/no-sync, security/detect-non-literal-fs-filename -- Path is assembled from resolved directories under lint control.
         if (existsSync(packageJsonPath)) {
             nearestPackageJsonCache.set(
                 normalizedStartDirectory,
@@ -44,7 +45,7 @@ const getNearestPackageJsonPath = (
             return packageJsonPath;
         }
 
-        const parentDirectory = dirname(currentDirectory);
+        const parentDirectory = path.dirname(currentDirectory);
 
         if (parentDirectory === currentDirectory) {
             nearestPackageJsonCache.set(normalizedStartDirectory, undefined);
@@ -89,6 +90,7 @@ const readDependencyNamesFromPackageJson = (
     }
 
     try {
+        // eslint-disable-next-line n/no-sync, security/detect-non-literal-fs-filename -- Path comes from nearest package.json discovery in this module.
         const packageJsonText = readFileSync(packageJsonPath, "utf8");
         const parsedPackageJson = JSON.parse(packageJsonText) as unknown;
 
@@ -125,8 +127,8 @@ export const getDependencyNamesForFile = (
     physicalFilename: string,
     cwd: string
 ): ReadonlySet<string> | undefined => {
-    const startDirectory = isAbsolute(physicalFilename)
-        ? dirname(physicalFilename)
+    const startDirectory = path.isAbsolute(physicalFilename)
+        ? path.dirname(physicalFilename)
         : cwd;
     const candidatePackageJsonPaths = new Set<string>();
     const nearestPackageJsonPath = getNearestPackageJsonPath(startDirectory);
@@ -135,14 +137,14 @@ export const getDependencyNamesForFile = (
         candidatePackageJsonPaths.add(nearestPackageJsonPath);
     }
 
-    const cwdPackageJsonPath = getNearestPackageJsonPath(resolve(cwd));
+    const cwdPackageJsonPath = getNearestPackageJsonPath(path.resolve(cwd));
 
     if (isDefined(cwdPackageJsonPath)) {
         candidatePackageJsonPaths.add(cwdPackageJsonPath);
     }
 
     const processCwdPackageJsonPath = getNearestPackageJsonPath(
-        resolve(process.cwd())
+        path.resolve(process.cwd())
     );
 
     if (isDefined(processCwdPackageJsonPath)) {

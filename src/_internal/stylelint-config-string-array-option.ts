@@ -1,21 +1,23 @@
+import type { TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Helpers for reading top-level Stylelint string-or-string-array options.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 const isStringLiteralExpression = (
     value: Readonly<TSESTree.Expression>
 ): value is TSESTree.StringLiteral =>
-    value.type === "Literal" && typeof value.value === "string";
+    value.type === AST_NODE_TYPES.Literal && typeof value.value === "string";
 
 type StringArrayOptionValue = Readonly<
     | {
@@ -53,7 +55,7 @@ export const getStringArrayOptionValue = (
         };
     }
 
-    if (propertyValue.type !== "ArrayExpression") {
+    if (propertyValue.type !== AST_NODE_TYPES.ArrayExpression) {
         return undefined;
     }
 
@@ -64,7 +66,7 @@ export const getStringArrayOptionValue = (
             return undefined;
         }
 
-        if (element.type === "SpreadElement") {
+        if (element.type === AST_NODE_TYPES.SpreadElement) {
             return undefined;
         }
 
@@ -90,4 +92,7 @@ export const getStringArrayOptionValue = (
  * @returns `true` when the entry starts with `./`, `../`, `.\\`, or `..\\`.
  */
 export const isRelativeSpecifier = (specifier: string): boolean =>
-    /^\.{1,2}[/\\]/u.test(specifier);
+    specifier.startsWith("./") ||
+    specifier.startsWith("../") ||
+    specifier.startsWith(".\\") ||
+    specifier.startsWith("..\\");

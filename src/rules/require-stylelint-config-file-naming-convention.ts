@@ -13,7 +13,7 @@ type MessageIds = "requireCanonicalStylelintConfigFilename";
 type Options = readonly [];
 
 const canonicalStylelintConfigFilenamePattern =
-    /^stylelint\.config\.(?:[cm]?js|[cm]?ts)$/u;
+    /^stylelint\.config\.(?:[cm]?js|[cm]?ts)$/v;
 
 const getBasename = (filename: string): string => {
     const windowsSeparators = stringSplit(filename, "\\");

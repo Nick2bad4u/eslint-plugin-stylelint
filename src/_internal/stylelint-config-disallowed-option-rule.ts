@@ -2,13 +2,13 @@
  * @packageDocumentation
  * Shared rule factory for disallowing top-level Stylelint config options that are better handled elsewhere.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
 import type { Except } from "type-fest";
 
 import {
     createFixToRemoveObjectProperty,
     getExportedStylelintConfigObject,
     getObjectPropertyByName,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "./stylelint-config-object.js";
 import {
@@ -47,12 +47,11 @@ export const createStylelintConfigDisallowedOptionRule = (
 
             return toRuleListener({
                 ExportDefaultDeclaration(node: unknown) {
-                    if (node === null || typeof node !== "object") {
+                    if (!isExportDefaultDeclarationNode(node)) {
                         return;
                     }
 
-                    const exportDefaultNode =
-                        node as TSESTree.ExportDefaultDeclaration;
+                    const exportDefaultNode = node;
                     const configObject = getExportedStylelintConfigObject(
                         exportDefaultNode.declaration
                     );

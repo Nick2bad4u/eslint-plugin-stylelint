@@ -73,6 +73,8 @@ const collectDocIds = (items: readonly SidebarItem[]): string[] => {
             collectedDocIds.push(item.id);
         } else if (isCategorySidebarItem(item)) {
             collectedDocIds.push(...collectDocIds(item.items));
+        } else {
+            continue;
         }
     }
 

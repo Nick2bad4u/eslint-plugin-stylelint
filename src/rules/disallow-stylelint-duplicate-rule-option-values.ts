@@ -1,16 +1,18 @@
+import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
+import type { JsonPrimitive } from "type-fest";
+
 /**
  * @packageDocumentation
  * Disallow duplicate values in array-valued Stylelint secondary rule options.
  */
-import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
-import type { JsonPrimitive } from "type-fest";
-
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 import { arrayJoin, isDefined, setHas } from "ts-extras";
 
 import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
 
 import {
     getExportedStylelintConfigObject,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "../_internal/stylelint-config-object.js";
 import {
@@ -26,15 +28,15 @@ type Options = readonly [];
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 const getComparableLiteral = (
     expression: Readonly<TSESTree.Expression>
 ): ComparableLiteral | undefined => {
-    if (expression.type !== "Literal") {
+    if (expression.type !== AST_NODE_TYPES.Literal) {
         return undefined;
     }
 
@@ -56,7 +58,7 @@ const getArrayLiteralElements = (
     const elements: Readonly<TSESTree.Expression>[] = [];
 
     for (const element of arrayExpression.elements) {
-        if (element === null || element.type === "SpreadElement") {
+        if (element === null || element.type === AST_NODE_TYPES.SpreadElement) {
             return undefined;
         }
 
@@ -72,7 +74,7 @@ const getObjectExpressionElements = (
     const objectElements: Readonly<TSESTree.ObjectExpression>[] = [];
 
     for (const element of arrayExpression.elements) {
-        if (element?.type === "ObjectExpression") {
+        if (element?.type === AST_NODE_TYPES.ObjectExpression) {
             objectElements.push(element);
         }
     }
@@ -86,7 +88,7 @@ const getArrayValuedOptionProperties = (
     const optionArrays: Readonly<TSESTree.ArrayExpression>[] = [];
 
     for (const optionProperty of optionObject.properties) {
-        if (optionProperty.type !== "Property") {
+        if (optionProperty.type !== AST_NODE_TYPES.Property) {
             continue;
         }
 
@@ -94,7 +96,7 @@ const getArrayValuedOptionProperties = (
 
         if (
             isPropertyExpressionValue(optionPropertyValue) &&
-            optionPropertyValue.type === "ArrayExpression"
+            optionPropertyValue.type === AST_NODE_TYPES.ArrayExpression
         ) {
             optionArrays.push(optionPropertyValue);
         }
@@ -199,7 +201,7 @@ const reportDuplicateRuleOptionValues = (
         return;
     }
 
-    if (ruleEntryValue.type !== "ArrayExpression") {
+    if (ruleEntryValue.type !== AST_NODE_TYPES.ArrayExpression) {
         return;
     }
 
@@ -231,12 +233,11 @@ const disallowStylelintDuplicateRuleOptionValuesRule: RuleModuleWithDocs<
 
         return toRuleListener({
             ExportDefaultDeclaration(node: unknown) {
-                if (node === null || typeof node !== "object") {
+                if (!isExportDefaultDeclarationNode(node)) {
                     return;
                 }
 
-                const exportDefaultNode =
-                    node as TSESTree.ExportDefaultDeclaration;
+                const exportDefaultNode = node;
                 const configObject = getExportedStylelintConfigObject(
                     exportDefaultNode.declaration
                 );

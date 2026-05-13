@@ -1,10 +1,15 @@
-import nick2bad4u from "eslint-config-nick2bad4u";
+import nickTwoBadFourU from "eslint-config-nick2bad4u";
 
-import stylelint2 from "./plugin.mjs";
+import plugin from "./plugin.mjs";
+
+/** @type {import("./src/plugin").Stylelint2Plugin} */
+const stylelint2 = /** @type {import("./src/plugin").Stylelint2Plugin} */ (
+    plugin
+);
 
 /** @type {import("eslint").Linter.Config[]} */
 const config = [
-    ...nick2bad4u.configs.withoutStylelint2,
+    ...nickTwoBadFourU.configs.withoutStylelint2,
 
     // Local Plugin Config
     // This lets us use the plugin's rules in this repository without needing to publish the plugin first.
@@ -14,12 +19,14 @@ const config = [
         plugins: {
             "stylelint-2": stylelint2,
         },
+        /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- plugin config arrays are runtime-validated ESLint rule maps. */
         rules: {
             // @ts-expect-error -- plugin.mjs is typed as generic ESLint.Plugin.
             ...stylelint2.configs.all[0].rules,
             // @ts-expect-error -- plugin.mjs is typed as generic ESLint.Plugin.
             ...stylelint2.configs.all[1].rules,
         },
+        /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- end local override for plugin rule map spreads. */
     },
     {
         files: [

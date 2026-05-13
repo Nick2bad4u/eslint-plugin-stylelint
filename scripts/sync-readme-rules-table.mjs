@@ -1,6 +1,6 @@
 /**
- * @packageDocumentation
- * Synchronize or validate the README rules table from canonical rule metadata.
+ * Package documentation. Synchronize or validate the README rules table from
+ * canonical rule metadata.
  */
 // @ts-check
 
@@ -51,7 +51,13 @@ const presetDocsByName = {
     },
 };
 
-/** @param {keyof typeof presetDocsByName} presetName */
+/**
+ * @param {keyof typeof presetDocsByName} presetName
+ *
+ * @returns {string}
+ *
+ * @throws {Error} When the operation fails.
+ */
 const toPresetLegendLine = (presetName) => {
     const preset = presetDocsByName[presetName];
     const icon = stylelint2ConfigMetadataByName[presetName]?.icon;
@@ -69,7 +75,13 @@ const rulesSectionHeading = "## Rules";
 const detectLineEnding = (markdown) =>
     markdown.includes("\r\n") ? "\r\n" : "\n";
 
-/** @param {string} markdown */
+/**
+ * @param {string} markdown
+ *
+ * @returns {{ startOffset: number; endOffset: number }}
+ *
+ * @throws {Error} When the operation fails.
+ */
 const getRulesSectionBounds = (markdown) => {
     const startOffset = markdown.indexOf(rulesSectionHeading);
 
@@ -118,11 +130,25 @@ const normalizeConfigNames = (configs) => {
     return [...new Set(normalized)];
 };
 
-/** @param {{ meta?: { fixable?: string } }} ruleModule */
+/**
+ * @typedef {object} RuleMeta
+ *
+ * @property {string | undefined} [fixable] Rule fixability flag from metadata.
+ * @property {{ configs?: readonly string[] | string } | undefined} [docs] Rule
+ *   docs metadata.
+ */
+
+/**
+ * @typedef {object} RuleModule
+ *
+ * @property {RuleMeta | undefined} [meta] Rule metadata container.
+ */
+
+/** @param {RuleModule} ruleModule */
 const getRuleFixIndicator = (ruleModule) =>
     ruleModule.meta?.fixable === "code" ? "🔧" : "—";
 
-/** @param {{ meta?: { docs?: { configs?: readonly string[] | string } } }} ruleModule */
+/** @param {RuleModule} ruleModule */
 const getPresetIndicator = (ruleModule) => {
     const configNames = new Set(
         normalizeConfigNames(ruleModule.meta?.docs?.configs)
@@ -161,6 +187,8 @@ const getPresetIndicator = (ruleModule) => {
  *         };
  *     },
  * ]} entry
+ *
+ * @throws {Error} When the operation fails.
  */
 const toRuleTableRow = ([ruleName, ruleModule]) => {
     const docsUrl = ruleModule.meta?.docs?.url;

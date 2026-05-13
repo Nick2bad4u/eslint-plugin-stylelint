@@ -1,15 +1,17 @@
+import type { TSESTree } from "@typescript-eslint/utils";
+import type { Except } from "type-fest";
+
 /**
  * @packageDocumentation
  * Shared rule factory for requiring top-level boolean Stylelint config options.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
-import type { Except } from "type-fest";
-
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 import { arrayFirst, isPresent } from "ts-extras";
 
 import {
     getExportedStylelintConfigObject,
     getObjectPropertyByName,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "./stylelint-config-object.js";
 import {
@@ -30,28 +32,31 @@ type Options = readonly [];
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 const isBooleanTrueLiteral = (
     node: Readonly<TSESTree.Expression>
 ): node is TSESTree.BooleanLiteral =>
-    node.type === "Literal" && node.value === true;
+    node.type === AST_NODE_TYPES.Literal && node.value === true;
 
 const isOptionEnabled = (value: Readonly<TSESTree.Expression>): boolean => {
     if (isBooleanTrueLiteral(value)) {
         return true;
     }
 
-    if (value.type !== "ArrayExpression") {
+    if (value.type !== AST_NODE_TYPES.ArrayExpression) {
         return false;
     }
 
     const [firstElement] = value.elements;
 
-    return firstElement?.type === "Literal" && firstElement.value === true;
+    return (
+        firstElement?.type === AST_NODE_TYPES.Literal &&
+        firstElement.value === true
+    );
 };
 
 const getLineEnding = (text: string): "\n" | "\r\n" =>
@@ -85,12 +90,11 @@ export const createStylelintConfigBooleanOptionRule = (
 
             return toRuleListener({
                 ExportDefaultDeclaration(node: unknown) {
-                    if (node === null || typeof node !== "object") {
+                    if (!isExportDefaultDeclarationNode(node)) {
                         return;
                     }
 
-                    const exportDefaultNode =
-                        node as TSESTree.ExportDefaultDeclaration;
+                    const exportDefaultNode = node;
                     const configObject = getExportedStylelintConfigObject(
                         exportDefaultNode.declaration
                     );
@@ -144,7 +148,10 @@ export const createStylelintConfigBooleanOptionRule = (
 
                     context.report({
                         fix(fixer) {
-                            if (propertyValue.type === "ArrayExpression") {
+                            if (
+                                propertyValue.type ===
+                                AST_NODE_TYPES.ArrayExpression
+                            ) {
                                 const [firstElement] = propertyValue.elements;
 
                                 if (isPresent(firstElement)) {

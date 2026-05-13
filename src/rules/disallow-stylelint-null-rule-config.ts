@@ -1,15 +1,17 @@
+import type { TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Disallow `null` Stylelint rule configurations in authored config files.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
-
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 import { isDefined } from "ts-extras";
 
 import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
 
 import {
     getExportedStylelintConfigObject,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "../_internal/stylelint-config-object.js";
 import {
@@ -24,22 +26,22 @@ type Options = readonly [];
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 const getRuleName = (
     property: Readonly<TSESTree.Property>
 ): string | undefined => {
     const propertyKey = property.key;
 
-    if (propertyKey.type === "Identifier") {
+    if (propertyKey.type === AST_NODE_TYPES.Identifier) {
         return propertyKey.name;
     }
 
     if (
-        propertyKey.type === "Literal" &&
+        propertyKey.type === AST_NODE_TYPES.Literal &&
         typeof propertyKey.value === "string"
     ) {
         return propertyKey.value;
@@ -60,12 +62,11 @@ const disallowStylelintNullRuleConfigRule: RuleModuleWithDocs<
 
         return toRuleListener({
             ExportDefaultDeclaration(node: unknown) {
-                if (node === null || typeof node !== "object") {
+                if (!isExportDefaultDeclarationNode(node)) {
                     return;
                 }
 
-                const exportDefaultNode =
-                    node as TSESTree.ExportDefaultDeclaration;
+                const exportDefaultNode = node;
                 const configObject = getExportedStylelintConfigObject(
                     exportDefaultNode.declaration
                 );
@@ -90,7 +91,7 @@ const disallowStylelintNullRuleConfigRule: RuleModuleWithDocs<
                     }
 
                     if (
-                        ruleEntryValue.type !== "Literal" ||
+                        ruleEntryValue.type !== AST_NODE_TYPES.Literal ||
                         ruleEntryValue.value !== null
                     ) {
                         continue;

@@ -1,14 +1,17 @@
+import type { TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Require every Stylelint override entry to declare non-empty `files` matchers.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 
 import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
 
 import {
     getExportedStylelintConfigObject,
     getObjectPropertyByName,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "../_internal/stylelint-config-object.js";
 import { createTypedRule, toRuleListener } from "../_internal/typed-rule.js";
@@ -19,15 +22,15 @@ type Options = readonly [];
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 const isNonEmptyStringLiteral = (
     expression: Readonly<TSESTree.Expression>
 ): expression is TSESTree.StringLiteral =>
-    expression.type === "Literal" &&
+    expression.type === AST_NODE_TYPES.Literal &&
     typeof expression.value === "string" &&
     expression.value.trim().length > 0;
 
@@ -38,14 +41,14 @@ const hasNonEmptyFilesMatcher = (
         return true;
     }
 
-    if (expression.type !== "ArrayExpression") {
+    if (expression.type !== AST_NODE_TYPES.ArrayExpression) {
         return false;
     }
 
     for (const element of expression.elements) {
         if (
             element !== null &&
-            element.type === "Literal" &&
+            element.type === AST_NODE_TYPES.Literal &&
             typeof element.value === "string" &&
             element.value.trim().length > 0
         ) {
@@ -68,12 +71,11 @@ const requireStylelintOverridesFilesRule: RuleModuleWithDocs<
 
         return toRuleListener({
             ExportDefaultDeclaration(node: unknown) {
-                if (node === null || typeof node !== "object") {
+                if (!isExportDefaultDeclarationNode(node)) {
                     return;
                 }
 
-                const exportDefaultNode =
-                    node as TSESTree.ExportDefaultDeclaration;
+                const exportDefaultNode = node;
                 const configObject = getExportedStylelintConfigObject(
                     exportDefaultNode.declaration
                 );
@@ -97,12 +99,15 @@ const requireStylelintOverridesFilesRule: RuleModuleWithDocs<
                     return;
                 }
 
-                if (overridesPropertyValue.type !== "ArrayExpression") {
+                if (
+                    overridesPropertyValue.type !==
+                    AST_NODE_TYPES.ArrayExpression
+                ) {
                     return;
                 }
 
                 for (const element of overridesPropertyValue.elements) {
-                    if (element?.type !== "ObjectExpression") {
+                    if (element?.type !== AST_NODE_TYPES.ObjectExpression) {
                         continue;
                     }
 

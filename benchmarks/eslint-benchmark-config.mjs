@@ -1,6 +1,7 @@
 import plugin from "../plugin.mjs";
 
 /** @typedef {import("eslint").Linter.Config} FlatConfig */
+
 /**
  * @typedef {Readonly<{
  *     name: string;
@@ -31,6 +32,8 @@ export const benchmarkFileGlobs = Object.freeze({
  * @param {string} configName - Plugin preset key.
  *
  * @returns {FlatConfig} Single flat config object.
+ *
+ * @throws {Error} When the operation fails.
  */
 const getSingleFlatConfig = (configName) => {
     const configValue = pluginConfigs[configName];

@@ -1,6 +1,6 @@
 /**
- * @packageDocumentation
- * Synchronize or validate the presets matrix from canonical rule metadata.
+ * Package documentation. Synchronize or validate the presets matrix from
+ * canonical rule metadata.
  */
 // @ts-check
 
@@ -47,7 +47,13 @@ const presetDisplayOrder = [
     "all",
 ];
 
-/** @param {PresetDisplayName} presetName */
+/**
+ * @param {PresetDisplayName} presetName
+ *
+ * @returns {string}
+ *
+ * @throws {Error} When the operation fails.
+ */
 const toPresetMarkdownLink = (presetName) => {
     const preset = presetDocsByName[presetName];
 
@@ -60,7 +66,13 @@ ${preset.icon}
 ](${preset.href})`.replace(/\n/gv, "");
 };
 
-/** @param {PresetDisplayName} presetName */
+/**
+ * @param {PresetDisplayName} presetName
+ *
+ * @returns {string}
+ *
+ * @throws {Error} When the operation fails.
+ */
 const toPresetLegendLine = (presetName) => {
     const preset = presetDocsByName[presetName];
 
@@ -75,7 +87,13 @@ const toPresetLegendLine = (presetName) => {
 const detectLineEnding = (markdown) =>
     markdown.includes("\r\n") ? "\r\n" : "\n";
 
-/** @param {string} markdown */
+/**
+ * @param {string} markdown
+ *
+ * @returns {{ startOffset: number; endOffset: number }}
+ *
+ * @throws {Error} When the operation fails.
+ */
 const getMatrixSectionBounds = (markdown) => {
     const startOffset = markdown.indexOf(matrixSectionHeading);
 

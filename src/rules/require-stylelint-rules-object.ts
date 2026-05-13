@@ -11,6 +11,7 @@ import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
 import {
     getExportedStylelintConfigObject,
     getObjectPropertyByName,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "../_internal/stylelint-config-object.js";
 import { createTypedRule, toRuleListener } from "../_internal/typed-rule.js";
@@ -37,12 +38,11 @@ const requireStylelintRulesObjectRule: RuleModuleWithDocs<MessageIds, Options> =
 
             return toRuleListener({
                 ExportDefaultDeclaration(node: unknown) {
-                    if (node === null || typeof node !== "object") {
+                    if (!isExportDefaultDeclarationNode(node)) {
                         return;
                     }
 
-                    const exportDefaultNode =
-                        node as TSESTree.ExportDefaultDeclaration;
+                    const exportDefaultNode = node;
                     const configObject = getExportedStylelintConfigObject(
                         exportDefaultNode.declaration
                     );

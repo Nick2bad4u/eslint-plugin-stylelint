@@ -8,8 +8,8 @@ import { objectHasOwn } from "ts-extras";
 /** Canonical flat-config preset keys exposed through `plugin.configs`. */
 export const stylelint2ConfigNames = [
     "all",
-    "configuration",
     "configs",
+    "configuration",
     "recommended",
     "stylelintOnly",
     "stylesheets",

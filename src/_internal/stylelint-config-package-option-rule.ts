@@ -2,7 +2,6 @@
  * @packageDocumentation
  * Rule factory helpers for validating package-backed Stylelint option entries.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
 import type { Except } from "type-fest";
 
 import { isDefined, setHas } from "ts-extras";
@@ -10,6 +9,7 @@ import { isDefined, setHas } from "ts-extras";
 import {
     getExportedStylelintConfigObject,
     getObjectPropertyByName,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "./stylelint-config-object.js";
 import {
@@ -52,12 +52,11 @@ export const createStylelintConfigRequireInstalledPackageOptionRule = (
 
             return toRuleListener({
                 ExportDefaultDeclaration(node: unknown) {
-                    if (node === null || typeof node !== "object") {
+                    if (!isExportDefaultDeclarationNode(node)) {
                         return;
                     }
 
-                    const exportDefaultNode =
-                        node as TSESTree.ExportDefaultDeclaration;
+                    const exportDefaultNode = node;
                     const configObject = getExportedStylelintConfigObject(
                         exportDefaultNode.declaration
                     );

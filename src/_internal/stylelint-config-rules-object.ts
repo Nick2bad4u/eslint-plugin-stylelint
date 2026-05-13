@@ -1,18 +1,20 @@
+import type { TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Shared helpers for accessing top-level Stylelint `rules` object entries.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 
 import { getObjectPropertyByName } from "./stylelint-config-object.js";
 
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 /**
  * Resolve the top-level Stylelint `rules` object expression.
@@ -36,7 +38,7 @@ export const getTopLevelRulesObject = (
         return undefined;
     }
 
-    return rulesPropertyValue.type === "ObjectExpression"
+    return rulesPropertyValue.type === AST_NODE_TYPES.ObjectExpression
         ? rulesPropertyValue
         : undefined;
 };
@@ -55,7 +57,7 @@ export const getTopLevelRuleEntries = (
     const ruleEntries: TSESTree.Property[] = [];
 
     for (const property of rulesObject.properties) {
-        if (property.type !== "Property") {
+        if (property.type !== AST_NODE_TYPES.Property) {
             continue;
         }
 

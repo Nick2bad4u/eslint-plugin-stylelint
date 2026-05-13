@@ -85,16 +85,16 @@ const collectEnabledRuleIds = (configValue: unknown): ReadonlySet<string> => {
 
 const canonicalConfigMembership = [
     {
-        configReference: "stylelint2.configs.recommended",
-        ruleIds: collectEnabledRuleIds(stylelint2Plugin.configs.recommended),
+        configReference: "stylelint2.configs.all",
+        ruleIds: collectEnabledRuleIds(stylelint2Plugin.configs.all),
     },
     {
         configReference: "stylelint2.configs.configuration",
         ruleIds: collectEnabledRuleIds(stylelint2Plugin.configs.configuration),
     },
     {
-        configReference: "stylelint2.configs.all",
-        ruleIds: collectEnabledRuleIds(stylelint2Plugin.configs.all),
+        configReference: "stylelint2.configs.recommended",
+        ruleIds: collectEnabledRuleIds(stylelint2Plugin.configs.recommended),
     },
     {
         configReference: "stylelint2.configs.stylelintOnly",

@@ -1,6 +1,6 @@
 /**
- * @packageDocumentation
- * Canonical preferred display order for plugin rules in generated docs surfaces.
+ * Package documentation. Canonical preferred display order for plugin rules in
+ * generated docs surfaces.
  */
 
 /**

@@ -1,15 +1,17 @@
+import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Enforce sorted Stylelint rule keys in top-level rules object declarations.
  */
-import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
-
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 import { arrayAt, arrayFirst, arrayJoin, isDefined } from "ts-extras";
 
 import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
 
 import {
     getExportedStylelintConfigObject,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "../_internal/stylelint-config-object.js";
 import {
@@ -26,12 +28,12 @@ const getRuleName = (
 ): string | undefined => {
     const propertyKey = property.key;
 
-    if (propertyKey.type === "Identifier") {
+    if (propertyKey.type === AST_NODE_TYPES.Identifier) {
         return propertyKey.name;
     }
 
     if (
-        propertyKey.type === "Literal" &&
+        propertyKey.type === AST_NODE_TYPES.Literal &&
         typeof propertyKey.value === "string"
     ) {
         return propertyKey.value;
@@ -122,12 +124,11 @@ const sortStylelintRuleKeysRule: RuleModuleWithDocs<MessageIds, Options> =
 
             return toRuleListener({
                 ExportDefaultDeclaration(node: unknown) {
-                    if (node === null || typeof node !== "object") {
+                    if (!isExportDefaultDeclarationNode(node)) {
                         return;
                     }
 
-                    const exportDefaultNode =
-                        node as TSESTree.ExportDefaultDeclaration;
+                    const exportDefaultNode = node;
                     const configObject = getExportedStylelintConfigObject(
                         exportDefaultNode.declaration
                     );

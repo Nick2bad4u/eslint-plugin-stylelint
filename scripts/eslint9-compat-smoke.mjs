@@ -34,6 +34,8 @@ const parsePositiveInteger = (value) => {
  * @param {readonly string[]} argv
  *
  * @returns {number | undefined}
+ *
+ * @throws {Error} When the operation fails.
  */
 const getExpectedEslintMajor = (argv) => {
     const expectedFlag = argv.find((argument) =>
@@ -60,6 +62,8 @@ const getExpectedEslintMajor = (argv) => {
  * @param {string} version
  *
  * @returns {number}
+ *
+ * @throws {Error} When the operation fails.
  */
 const getEslintMajorVersion = (version) => {
     const [majorText = "0"] = version.split(".");
@@ -80,6 +84,8 @@ const getEslintMajorVersion = (version) => {
  * @param {readonly string[]} [fallbackConfigNames]
  *
  * @returns {FlatConfig}
+ *
+ * @throws {Error} When the operation fails.
  */
 const getSingleFlatConfig = (
     pluginConfigs,

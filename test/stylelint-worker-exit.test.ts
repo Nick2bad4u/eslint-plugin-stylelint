@@ -8,7 +8,7 @@ import { describe, expect, it } from "vitest";
 
 type ChildExitResult = Readonly<{
     code: null | number;
-    signal: NodeJS.Signals | null;
+    signal: ReturnType<typeof spawnSync>["signal"];
     stderr: string;
     stdout: string;
     timedOut: boolean;

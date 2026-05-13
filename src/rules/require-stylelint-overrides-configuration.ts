@@ -1,13 +1,16 @@
+import type { TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Require every Stylelint override entry to include effective configuration content.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 
 import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
 
 import {
     getExportedStylelintConfigObject,
+    isExportDefaultDeclarationNode,
     isPropertyNamed,
     isStylelintConfigFile,
 } from "../_internal/stylelint-config-object.js";
@@ -19,17 +22,17 @@ type Options = readonly [];
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 const getOverrideEntries = (
     configObject: Readonly<TSESTree.ObjectExpression>
 ): readonly TSESTree.ObjectExpression[] => {
     for (const propertyNode of configObject.properties) {
         if (
-            propertyNode.type !== "Property" ||
+            propertyNode.type !== AST_NODE_TYPES.Property ||
             !isPropertyNamed(propertyNode, "overrides")
         ) {
             continue;
@@ -41,14 +44,14 @@ const getOverrideEntries = (
             return [];
         }
 
-        if (propertyValue.type !== "ArrayExpression") {
+        if (propertyValue.type !== AST_NODE_TYPES.ArrayExpression) {
             return [];
         }
 
         const overrideEntries: TSESTree.ObjectExpression[] = [];
 
         for (const entry of propertyValue.elements) {
-            if (entry?.type !== "ObjectExpression") {
+            if (entry?.type !== AST_NODE_TYPES.ObjectExpression) {
                 continue;
             }
 
@@ -65,14 +68,14 @@ const hasSpreadProperty = (
     overrideEntry: Readonly<TSESTree.ObjectExpression>
 ): boolean =>
     overrideEntry.properties.some(
-        (propertyNode) => propertyNode.type === "SpreadElement"
+        (propertyNode) => propertyNode.type === AST_NODE_TYPES.SpreadElement
     );
 
 const hasEffectiveConfigurationProperty = (
     overrideEntry: Readonly<TSESTree.ObjectExpression>
 ): boolean => {
     for (const propertyNode of overrideEntry.properties) {
-        if (propertyNode.type !== "Property") {
+        if (propertyNode.type !== AST_NODE_TYPES.Property) {
             continue;
         }
 
@@ -101,12 +104,11 @@ const requireStylelintOverridesConfigurationRule: RuleModuleWithDocs<
 
         return toRuleListener({
             ExportDefaultDeclaration(node: unknown) {
-                if (node === null || typeof node !== "object") {
+                if (!isExportDefaultDeclarationNode(node)) {
                     return;
                 }
 
-                const exportDefaultNode =
-                    node as TSESTree.ExportDefaultDeclaration;
+                const exportDefaultNode = node;
                 const configObject = getExportedStylelintConfigObject(
                     exportDefaultNode.declaration
                 );

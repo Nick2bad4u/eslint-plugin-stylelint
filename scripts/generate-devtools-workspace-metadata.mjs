@@ -23,6 +23,8 @@ const shouldRegenerateUuid = process.argv.includes("--regenerate");
  * parse error handling.
  *
  * @returns {Record<string, unknown>} Parsed package.json object.
+ *
+ * @throws {Error} When the operation fails.
  */
 function loadRepositoryPackageJson() {
     if (!existsSync(repositoryPackageJsonPath)) {

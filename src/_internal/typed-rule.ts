@@ -101,6 +101,7 @@ const mergeDefaultOptions = <Options extends Readonly<UnknownArray>>(
         );
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- the generic `Options` tuple shape is preserved by index-wise merge but cannot be represented without an assertion.
     return mergedOptions as unknown as Options;
 };
 

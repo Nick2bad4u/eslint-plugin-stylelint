@@ -2,7 +2,7 @@
  * @packageDocumentation
  * Bridge Stylelint diagnostics and computed autofixes into ESLint.
  */
-import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
+import type { TSESLint } from "@typescript-eslint/utils";
 
 import { isDefined } from "ts-extras";
 
@@ -85,7 +85,7 @@ const stylelintRule: RuleModuleWithDocs<MessageIds, Options> = createTypedRule<
                         ? { quiet: rawOptions.quiet }
                         : {}),
                 });
-                const reportNode = sourceCode.ast as unknown as TSESTree.Node;
+                const reportNode = sourceCode.ast;
 
                 for (const parseError of lintResult.parseErrors) {
                     context.report({

@@ -24,6 +24,7 @@ const assertRuleTesterHook = (candidate: unknown, hookName: string): void => {
 assertRuleTesterHook(afterAll, "afterAll");
 RuleTester.afterAll = afterAll;
 assertRuleTesterHook(describe, "describe");
+// eslint-disable-next-line @typescript-eslint/strict-void-return -- RuleTester expects Jest-style hooks that may return framework internals.
 RuleTester.describe = describe;
 assertRuleTesterHook(it, "it");
 RuleTester.it = it;
@@ -36,6 +37,7 @@ RuleTester.itOnly = (
     ...arguments_: readonly [...Parameters<typeof RuleTester.itOnly>]
 ) => {
     Reflect.apply(typedVitestItOnly, undefined, arguments_);
+    return undefined;
 };
 
 type PluginRuleModule = Parameters<RuleTester["run"]>[1];

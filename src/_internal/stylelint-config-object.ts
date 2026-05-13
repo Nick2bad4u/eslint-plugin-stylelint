@@ -1,10 +1,11 @@
+import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Shared helpers for reading and rewriting Stylelint config objects.
  */
-import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
-
-import { basename } from "node:path";
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
+import path from "node:path";
 import { arrayFirst } from "ts-extras";
 
 const configBaseNamePattern =
@@ -18,7 +19,7 @@ const configBaseNamePattern =
  * @returns `true` when the file name matches supported Stylelint config names.
  */
 export const isStylelintConfigFile = (filename: string): boolean =>
-    configBaseNamePattern.test(basename(filename));
+    configBaseNamePattern.test(path.basename(filename));
 
 /**
  * Check whether a property key matches a specific string literal name.
@@ -36,11 +37,13 @@ export const isPropertyNamed = (
         return false;
     }
 
-    if (property.key.type === "Identifier") {
+    if (property.key.type === AST_NODE_TYPES.Identifier) {
         return property.key.name === name;
     }
 
-    return property.key.type === "Literal" && property.key.value === name;
+    const literalKeyValue = property.key.value;
+
+    return typeof literalKeyValue === "string" && literalKeyValue === name;
 };
 
 /**
@@ -54,24 +57,40 @@ export const isPropertyNamed = (
 export const getExportedStylelintConfigObject = (
     declaration: Readonly<TSESTree.ExportDefaultDeclaration["declaration"]>
 ): TSESTree.ObjectExpression | undefined => {
-    if (declaration.type === "ObjectExpression") {
+    if (declaration.type === AST_NODE_TYPES.ObjectExpression) {
         return declaration;
     }
 
     if (
-        declaration.type === "CallExpression" &&
-        declaration.callee.type === "Identifier" &&
+        declaration.type === AST_NODE_TYPES.CallExpression &&
+        declaration.callee.type === AST_NODE_TYPES.Identifier &&
         declaration.callee.name === "defineConfig"
     ) {
         const firstArgument = arrayFirst(declaration.arguments);
 
-        return firstArgument?.type === "ObjectExpression"
+        return firstArgument?.type === AST_NODE_TYPES.ObjectExpression
             ? firstArgument
             : undefined;
     }
 
     return undefined;
 };
+
+const getUnknownNodeType = (node: unknown): string | undefined => {
+    if (node === null || typeof node !== "object") {
+        return undefined;
+    }
+
+    const nodeType: unknown = Reflect.get(node, "type");
+
+    return typeof nodeType === "string" ? nodeType : undefined;
+};
+
+/** Type guard for unknown nodes entering generic rule listeners. */
+export const isExportDefaultDeclarationNode = (
+    node: unknown
+): node is TSESTree.ExportDefaultDeclaration =>
+    getUnknownNodeType(node) === AST_NODE_TYPES.ExportDefaultDeclaration;
 
 /**
  * Find one named top-level object property.
@@ -86,7 +105,7 @@ export const getObjectPropertyByName = (
     name: string
 ): TSESTree.Property | undefined => {
     for (const property of objectExpression.properties) {
-        if (property.type !== "Property") {
+        if (property.type !== AST_NODE_TYPES.Property) {
             continue;
         }
 
@@ -111,7 +130,7 @@ export const getObjectProperties = (
     const properties: TSESTree.Property[] = [];
 
     for (const property of objectExpression.properties) {
-        if (property.type !== "Property") {
+        if (property.type !== AST_NODE_TYPES.Property) {
             continue;
         }
 

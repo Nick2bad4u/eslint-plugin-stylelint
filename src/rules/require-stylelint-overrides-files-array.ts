@@ -1,14 +1,17 @@
+import type { TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Require Stylelint override `files` declarations to use explicit non-empty glob arrays.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 
 import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
 
 import {
     getExportedStylelintConfigObject,
     getObjectPropertyByName,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "../_internal/stylelint-config-object.js";
 import { createTypedRule, toRuleListener } from "../_internal/typed-rule.js";
@@ -20,23 +23,23 @@ type Options = readonly [];
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 const isNonEmptyStringLiteralElement = (
     element: Readonly<ArrayExpressionElement>
 ): boolean =>
     element !== null &&
-    element.type === "Literal" &&
+    element.type === AST_NODE_TYPES.Literal &&
     typeof element.value === "string" &&
     element.value.trim().length > 0;
 
 const hasStrictFilesArrayShape = (
     expression: Readonly<TSESTree.Expression>
 ): boolean => {
-    if (expression.type !== "ArrayExpression") {
+    if (expression.type !== AST_NODE_TYPES.ArrayExpression) {
         return false;
     }
 
@@ -67,12 +70,11 @@ const requireStylelintOverridesFilesArrayRule: RuleModuleWithDocs<
 
         return toRuleListener({
             ExportDefaultDeclaration(node: unknown) {
-                if (node === null || typeof node !== "object") {
+                if (!isExportDefaultDeclarationNode(node)) {
                     return;
                 }
 
-                const exportDefaultNode =
-                    node as TSESTree.ExportDefaultDeclaration;
+                const exportDefaultNode = node;
                 const configObject = getExportedStylelintConfigObject(
                     exportDefaultNode.declaration
                 );
@@ -96,12 +98,17 @@ const requireStylelintOverridesFilesArrayRule: RuleModuleWithDocs<
                     return;
                 }
 
-                if (overridesPropertyValue.type !== "ArrayExpression") {
+                if (
+                    overridesPropertyValue.type !==
+                    AST_NODE_TYPES.ArrayExpression
+                ) {
                     return;
                 }
 
                 for (const overrideEntry of overridesPropertyValue.elements) {
-                    if (overrideEntry?.type !== "ObjectExpression") {
+                    if (
+                        overrideEntry?.type !== AST_NODE_TYPES.ObjectExpression
+                    ) {
                         continue;
                     }
 

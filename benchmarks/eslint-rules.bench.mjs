@@ -13,9 +13,11 @@ const pluginConfigs =
 /**
  * Resolve one named preset config as a single flat config object.
  *
- * @param {string} configName Plugin preset key.
+ * @param {string} configName - Plugin preset key.
  *
  * @returns {FlatConfig} Resolved flat config object.
+ *
+ * @throws {Error} When the operation fails.
  */
 const getSingleFlatConfig = (configName) => {
     const configValue = pluginConfigs[configName];
@@ -32,7 +34,7 @@ const getSingleFlatConfig = (configName) => {
 /**
  * Create an ESLint instance for one benchmark scenario.
  *
- * @param {FlatConfig | readonly FlatConfig[]} overrideConfig Flat config or
+ * @param {FlatConfig | readonly FlatConfig[]} overrideConfig - Flat config or
  *   config array passed to the ESLint constructor.
  *
  * @returns {ESLint} Configured ESLint instance.

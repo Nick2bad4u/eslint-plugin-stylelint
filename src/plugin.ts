@@ -5,11 +5,12 @@
 import type { ESLint, Linter } from "eslint";
 import type { UnknownRecord } from "type-fest";
 
-import css from "@eslint/css";
+import plugin from "@eslint/css";
 import tsParser from "@typescript-eslint/parser";
 import { ESLint as ESLintRuntime } from "eslint";
 import { isSafeInteger, stringSplit } from "ts-extras";
 
+// eslint-disable-next-line import-x/extensions -- JSON import assertions require the explicit .json extension.
 import packageJson from "../package.json" with { type: "json" };
 import { stylelint2Rules } from "./_internal/rules-registry.js";
 import {
@@ -28,8 +29,8 @@ const pluginNamespace = "stylelint-2" as const;
 const stylesheetFiles = ["**/*.css"] as const;
 /** Stylelint config file globs covered by the config preset. */
 const configFiles = [
-    "**/stylelint.config.{js,mjs,cjs,ts,mts,cts}",
     "**/.stylelintrc.{js,mjs,cjs,ts,mts,cts}",
+    "**/stylelint.config.{js,mjs,cjs,ts,mts,cts}",
 ] as const;
 
 /** Public preset config value shape. */
@@ -43,6 +44,7 @@ export type Stylelint2RuleId =
 export type Stylelint2RuleName = keyof typeof stylelint2Rules;
 type FlatConfigRules = NonNullable<Linter.Config["rules"]>;
 /** ESLint-compatible rule map view of the strongly typed internal rule record. */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- eslint's RuleDefinition options use mutable arrays while plugin rule metadata is readonly.
 const eslintPluginRules = stylelint2Rules as NonNullable<
     ESLint.Plugin["rules"]
 > &
@@ -58,7 +60,7 @@ const version =
 const eslintMajorOverrideEnvironmentVariable =
     "STYLELINT2_ESLINT_MAJOR" as const;
 
-const positiveIntegerPattern = /^[1-9]\d*$/u;
+const positiveIntegerPattern = /^[1-9]\d*$/v;
 
 const parsePositiveInteger = (value: string): number | undefined => {
     if (!positiveIntegerPattern.test(value)) {
@@ -106,7 +108,6 @@ const cssLanguagePresetFields: Readonly<UnknownRecord> =
         : {};
 
 /** Fully assembled runtime plugin object exported by this package. */
-/** Fully assembled runtime plugin object exported by this package. */
 const stylelint2Plugin: ESLint.Plugin & {
     configs: Stylelint2Configs;
     meta: {
@@ -116,7 +117,14 @@ const stylelint2Plugin: ESLint.Plugin & {
     };
     rules: typeof eslintPluginRules;
 } = {
-    configs: {} as Stylelint2Configs,
+    configs: {
+        all: [],
+        configs: {},
+        configuration: {},
+        recommended: [],
+        stylelintOnly: {},
+        stylesheets: {},
+    },
     meta: {
         name: pluginName,
         namespace: pluginNamespace,
@@ -131,7 +139,7 @@ const stylelintOnlyPreset: Linter.Config = {
     ...cssLanguagePresetFields,
     name: stylelint2ConfigMetadataByName.stylelintOnly.presetName,
     plugins: {
-        ...(supportsCssLanguageInFlatConfig ? { css } : {}),
+        ...(supportsCssLanguageInFlatConfig ? { css: plugin } : {}),
         [pluginNamespace]: stylelint2Plugin,
     },
     rules: {

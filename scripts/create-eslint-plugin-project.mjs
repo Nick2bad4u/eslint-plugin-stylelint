@@ -403,11 +403,9 @@ function parseArgs(argv) {
 /**
  * Returns unique items while preserving insertion order.
  *
- * @template T - Item type.
+ * @param {readonly string[] | null | undefined} arr - Input collection.
  *
- * @param {Iterable<T> | null | undefined} arr - Input collection.
- *
- * @returns {T[]} A deduplicated array.
+ * @returns {string[]} A deduplicated array.
  */
 const uniq = (arr) => [...new Set(arr ?? [])];
 
@@ -444,14 +442,13 @@ function overlap(a, b) {
 /**
  * Splits an array into fixed-size chunks.
  *
- * @template T - Element type.
- *
- * @param {readonly T[]} arr - Source array.
+ * @param {readonly string[]} arr - Source array.
  * @param {number} chunkSize - Max number of items per chunk.
  *
- * @returns {T[][]} Array of chunks.
+ * @returns {string[][]} Array of chunks.
  */
 function chunkArray(arr, chunkSize) {
+    /** @type {string[][]} */
     const chunks = [];
     for (let i = 0; i < arr.length; i += chunkSize) {
         chunks.push(arr.slice(i, i + chunkSize));
@@ -555,6 +552,8 @@ async function runWithRetry(cmd, args, retries, opts) {
  * @param {{ yes: boolean }} param0
  *
  * @returns {void}
+ *
+ * @throws {Error} When the operation fails.
  */
 function ensureSafeToInit({ yes }) {
     const pkgPath = path.join(process.cwd(), "package.json");

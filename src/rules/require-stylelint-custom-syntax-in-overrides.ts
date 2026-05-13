@@ -1,14 +1,17 @@
+import type { TSESTree } from "@typescript-eslint/utils";
+
 /**
  * @packageDocumentation
  * Require `customSyntax` usage to be scoped within Stylelint overrides entries.
  */
-import type { TSESTree } from "@typescript-eslint/utils";
+import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 
 import type { RuleModuleWithDocs } from "../_internal/typed-rule.js";
 
 import {
     getExportedStylelintConfigObject,
     getObjectPropertyByName,
+    isExportDefaultDeclarationNode,
     isStylelintConfigFile,
 } from "../_internal/stylelint-config-object.js";
 import { createTypedRule, toRuleListener } from "../_internal/typed-rule.js";
@@ -19,20 +22,20 @@ type Options = readonly [];
 const isPropertyExpressionValue = (
     value: Readonly<TSESTree.Property["value"]>
 ): value is TSESTree.Expression =>
-    value.type !== "ArrayPattern" &&
-    value.type !== "AssignmentPattern" &&
-    value.type !== "ObjectPattern" &&
-    value.type !== "TSEmptyBodyFunctionExpression";
+    value.type !== AST_NODE_TYPES.ArrayPattern &&
+    value.type !== AST_NODE_TYPES.AssignmentPattern &&
+    value.type !== AST_NODE_TYPES.ObjectPattern &&
+    value.type !== AST_NODE_TYPES.TSEmptyBodyFunctionExpression;
 
 const hasOverridesCustomSyntax = (
     overridesValue: Readonly<TSESTree.Expression>
 ): boolean => {
-    if (overridesValue.type !== "ArrayExpression") {
+    if (overridesValue.type !== AST_NODE_TYPES.ArrayExpression) {
         return false;
     }
 
     for (const element of overridesValue.elements) {
-        if (element?.type !== "ObjectExpression") {
+        if (element?.type !== AST_NODE_TYPES.ObjectExpression) {
             continue;
         }
 
@@ -52,7 +55,7 @@ const hasOverridesCustomSyntax = (
         }
 
         if (
-            customSyntaxValue.type === "Literal" &&
+            customSyntaxValue.type === AST_NODE_TYPES.Literal &&
             typeof customSyntaxValue.value === "string" &&
             customSyntaxValue.value.trim().length > 0
         ) {
@@ -75,12 +78,11 @@ const requireStylelintCustomSyntaxInOverridesRule: RuleModuleWithDocs<
 
         return toRuleListener({
             ExportDefaultDeclaration(node: unknown) {
-                if (node === null || typeof node !== "object") {
+                if (!isExportDefaultDeclarationNode(node)) {
                     return;
                 }
 
-                const exportDefaultNode =
-                    node as TSESTree.ExportDefaultDeclaration;
+                const exportDefaultNode = node;
                 const configObject = getExportedStylelintConfigObject(
                     exportDefaultNode.declaration
                 );
